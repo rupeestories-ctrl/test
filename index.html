@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>401k / IRA India Return Planner · RupeeStories</title>
+<meta name="description" content="Plan the India and US tax impact of your US retirement accounts when returning to India. RNOR window, Section 89A, Roth conversion, FTC. Free. No login."/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a2e;--gold:#c9a84c;--gold-lt:#f0d080;--gold-dim:rgba(201,168,76,0.12);
+  --gold-border:rgba(201,168,76,0.35);--cream:#faf8f3;--border:#e8e0d0;--border2:#d4c8b8;
+  --card:#ffffff;--surface:#faf6f0;--muted:#777;--light:#b0a090;--text:#1a1a2e;
+  --green:#2d7a5f;--green-lt:#edf7f1;--red:#c0392b;--red-lt:#fdf0ee;
+  --blue:#2d5fa8;--blue-lt:#eef3fb;--orange:#b86a0a;
+  --serif:'Playfair Display',Georgia,serif;--mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+html,body{background:var(--cream);color:var(--text);font-family:var(--sans);min-height:100vh}
+button,input,select{font:inherit}
+:focus-visible{outline:3px solid rgba(201,168,76,0.6);outline-offset:2px}
+
+/* SITE HEADER */
+.site-header{background:var(--ink);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.site-header a{color:var(--gold);text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0.5px}
+.site-header a:hover{color:var(--gold-lt)}
+
+/* HERO */
+.hero-banner{background:var(--ink);color:white;padding:48px 24px 40px;text-align:center}
+.hero-banner h1{font-family:var(--serif);font-size:clamp(24px,5vw,44px);font-weight:900;line-height:1.15;margin-bottom:12px}
+.hero-banner h1 em{color:var(--gold);font-style:italic}
+.hero-banner p{font-size:14px;color:rgba(255,255,255,0.62);max-width:560px;margin:0 auto 24px;line-height:1.6}
+.hero-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.pill{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.84);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.pill:hover{background:rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.5)}
+.pnav{display:flex;justify-content:center;gap:6px}
+.pnav-btn{padding:8px 20px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.pnav-btn.active,.pnav-btn:hover{background:rgba(201,168,76,0.2);border-color:var(--gold);color:white}
+.pnav-btn.active{font-weight:600}
+
+/* PAGE SYSTEM */
+.pg{display:none}.pg.active{display:block}
+.shell{max-width:820px;margin:0 auto;padding:36px 22px 80px}
+
+/* CARD */
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;box-shadow:0 2px 10px rgba(26,26,46,0.06);margin-bottom:16px}
+.cc{padding:22px 24px}
+.sec-lbl{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin:20px 0 10px;font-weight:500}
+.pt{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--text);margin-bottom:16px}
+
+/* INPUT GRID */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:680px){.ig{grid-template-columns:1fr}}
+.igrp{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.field input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border2);outline:none}
+.field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 1px 4px rgba(201,168,76,.4)}
+.fv{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--text)}
+.field select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);background:var(--card);cursor:pointer}
+.field select:focus{outline:none;border-color:var(--gold)}
+.dvd{height:1px;background:var(--border);margin:4px 0}
+
+/* RNOR BAND */
+.rnor-band{background:linear-gradient(135deg,var(--ink) 0%,#2a2b3e 100%);border:1.5px solid rgba(201,168,76,0.3);border-radius:14px;padding:22px 26px;color:white;margin-bottom:16px}
+.rnor-band-lbl{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.5);margin-bottom:4px}
+.rnor-band-title{font-family:var(--serif);font-size:20px;font-weight:700;color:white;margin-bottom:6px}
+.rnor-band-title span{color:var(--gold-lt);font-style:italic}
+.rnor-band-desc{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:14px;line-height:1.55}
+.rnor-track{height:6px;background:rgba(255,255,255,.12);border-radius:3px;margin-bottom:8px;overflow:hidden}
+.rnor-prog{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-lt));border-radius:3px;transition:width .4s ease}
+.rnor-dates{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4)}
+
+/* METRIC STRIP */
+.metric-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.mc{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px}
+.mc-lbl{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px}
+.mc-val{font-family:var(--serif);font-size:21px;font-weight:900;color:var(--ink);line-height:1.1}
+.mc-val.gold{color:var(--gold)}.mc-val.green{color:var(--green)}.mc-val.red{color:var(--red)}
+.mc-sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px}
+.mc.border-gold{border-left:3px solid var(--gold)}.mc.border-green{border-left:3px solid var(--green)}
+.mc.border-red{border-left:3px solid var(--red)}.mc.border-ink{border-left:3px solid var(--ink)}
+
+/* INSIGHT */
+.insight{background:#fffcf0;border:1px solid var(--gold-border);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65;color:var(--text)}
+.insight strong{color:var(--orange)}
+
+/* WARNING BOXES */
+.warn-box{border-radius:10px;padding:13px 16px;margin-bottom:10px;font-size:13px;line-height:1.6}
+.warn-a{background:#fffcf0;border:1px solid var(--gold-border);border-left:3px solid var(--gold);color:#7a5500}
+.warn-r{background:var(--red-lt);border:1px solid rgba(192,57,43,.25);border-left:3px solid var(--red);color:#7a1a0e}
+.warn-g{background:var(--green-lt);border:1px solid rgba(45,122,95,.25);border-left:3px solid var(--green);color:#1a5040}
+.warn-b{background:var(--blue-lt);border:1px solid rgba(45,95,168,.25);border-left:3px solid var(--blue);color:#1a3a70}
+.warn-box strong{display:block;margin-bottom:3px}
+
+/* TABS */
+.tab-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(26,26,46,0.06)}
+.tabs{display:flex;overflow-x:auto;border-bottom:2px solid var(--border);background:var(--surface);padding:0 16px;gap:2px}
+.tab{padding:12px 14px;border:none;background:transparent;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--orange);border-bottom-color:var(--gold);font-weight:600}
+.tab.tab-warn{color:var(--red)!important}
+.tab.tab-warn.active{border-bottom-color:var(--red)!important}
+.panel{padding:24px;display:none}.panel.active{display:block}
+.panel-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+
+/* STRATEGY CARDS */
+.scg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+@media(max-width:600px){.scg{grid-template-columns:1fr}}
+.scc{border:1.5px solid var(--border);border-radius:12px;padding:15px 16px;background:var(--card)}
+.scc.rec{border-color:rgba(45,122,95,.5);background:var(--green-lt)}
+.sc-nm{font-weight:700;font-size:14px;color:var(--text);margin-bottom:5px}
+.sc-tag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.tag-g{background:var(--green-lt);color:var(--green)}
+.tag-a{background:#fffcf0;color:var(--orange)}
+.tag-r{background:var(--red-lt);color:var(--red)}
+.sc-row{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px solid rgba(232,224,208,.6)}
+.sc-row:last-of-type{border-bottom:none}
+.sc-row .lbl{color:var(--muted)}.sc-row .val{font-weight:600;color:var(--text);font-family:var(--mono)}
+.sc-total{display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-top:10px;padding-top:10px;border-top:2px solid var(--border)}
+.sc-note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5}
+.leg-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.leg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.ls{width:12px;height:12px;border-radius:3px}
+.cw{position:relative;height:200px;margin-bottom:6px}
+
+/* ROTH TABLE */
+.rpt{width:100%;border-collapse:collapse;font-size:13px}
+.rpt th{text-align:left;padding:8px 10px;background:var(--ink);font-family:var(--mono);font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.55)}
+.rpt td{padding:9px 10px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px}
+.rpt tr.rnr-row td{background:var(--gold-dim);font-weight:600}
+.rpt tr.rnr-row td:first-child{border-left:3px solid var(--gold)}
+.rpt tr.ror-row td{background:var(--red-lt)}
+
+/* ACTION PLAN */
+.phase{margin-bottom:24px}
+.phase-title{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--text);padding-bottom:8px;border-bottom:2px solid var(--border);margin-bottom:12px}
+.action{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(232,224,208,.5);align-items:flex-start}
+.action:last-child{border-bottom:none}
+.act-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px}
+.ico-r{background:var(--red-lt);color:var(--red)}
+.ico-a{background:#fffcf0;color:var(--orange)}
+.ico-g{background:var(--green-lt);color:var(--green)}
+.ico-n{background:rgba(26,26,46,.06);color:var(--ink)}
+.act-body{flex:1}
+.act-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px}
+.act-desc{font-size:12.5px;color:var(--muted);line-height:1.6}
+.act-desc strong{color:var(--text)}
+
+/* COMPLIANCE */
+.cs-section{margin-bottom:26px}
+.cs-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.ci-grid{display:flex;flex-direction:column;gap:10px}
+.ci{background:var(--surface);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
+.ci-crit{border-left:4px solid var(--red);background:var(--red-lt)}
+.ci-warn{border-left:4px solid var(--gold)}
+.ci-info{border-left:4px solid var(--blue)}
+.ci-ok{border-left:4px solid var(--green)}
+.ci-head{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px}
+.ci-crit .ci-head{color:var(--red)}
+.ci-body{font-size:12.5px;color:var(--muted);line-height:1.65}
+.ci-body strong{color:var(--text)}
+.badge-pill{font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0}
+.bp-r{background:var(--red-lt);color:var(--red)}
+.bp-a{background:#fffcf0;color:var(--orange)}
+.bp-g{background:var(--green-lt);color:var(--green)}
+.bp-b{background:var(--blue-lt);color:var(--blue)}
+.bp-n{background:rgba(26,26,46,.07);color:var(--ink)}
+
+/* USE CASES */
+.uc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.uc-grid{grid-template-columns:1fr}}
+.ucc{border:1.5px solid var(--border);border-radius:14px;padding:17px;cursor:pointer;transition:all .2s;background:var(--card)}
+.ucc:hover{border-color:var(--gold);box-shadow:0 3px 14px rgba(201,168,76,.18);transform:translateY(-2px)}
+.uc-nm{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.uc-sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:10px}
+.uc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.uc-tag{font-family:var(--mono);font-size:9px;font-weight:600;padding:2px 8px;border-radius:10px;background:rgba(26,26,46,.06);color:var(--ink);text-transform:uppercase;letter-spacing:.4px}
+.uc-hi{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:12px}
+.uc-btn{width:100%;padding:9px;border-radius:8px;border:1.5px solid var(--gold);background:var(--gold-dim);color:var(--orange);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .2s}
+.uc-btn:hover{background:var(--gold);color:white}
+
+/* GLOSSARY */
+.gback{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--orange);cursor:pointer;margin-bottom:22px;border:none;background:none;padding:0}
+.gback:hover{opacity:.75}
+.gs-title{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--text);margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.gg{display:flex;flex-direction:column;gap:10px}
+.gi{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px}
+.gi-term{font-weight:700;font-size:14px;color:var(--text);margin-bottom:5px}
+.gi-def{font-size:13px;color:var(--muted);line-height:1.7}
+.gi-def strong{color:var(--text)}
+
+/* ASSUMPTIONS */
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.ag{grid-template-columns:1fr}}
+.ac{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:18px 20px}
+.ac-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px}
+.ac ul{list-style:none}
+.ac li{font-size:12.5px;color:var(--muted);padding:5px 0;border-bottom:1px solid rgba(232,224,208,.6);line-height:1.55;display:flex;gap:8px}
+.ac li::before{content:'→';color:var(--gold);font-weight:700;flex-shrink:0}
+.disclaimer-box{margin-top:20px;padding:15px 18px;background:var(--red-lt);border:1.5px solid rgba(192,57,43,.2);border-left:4px solid var(--red);border-radius:0 10px 10px 0;display:flex;gap:12px;align-items:flex-start}
+.disclaimer-icon{font-size:20px;flex-shrink:0;line-height:1}
+.disclaimer-text strong{color:var(--red);font-size:13px;display:block;margin-bottom:4px}
+.disclaimer-text p{font-size:12px;color:#5a1a13;line-height:1.7}
+
+/* FOOTER NAV */
+.fnav{text-align:center;padding:20px;font-size:13px;color:var(--muted)}
+.fnav a{color:var(--orange);cursor:pointer;font-weight:600;text-decoration:none;margin:0 8px}
+
+/* MISC */
+.sec-title{font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border);margin-top:4px}
+.proj-table{overflow-x:auto}
+.pt-head{display:grid;grid-template-columns:110px 60px 110px 1fr;background:var(--ink);padding:9px 14px;font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:1px;border-radius:10px 10px 0 0}
+.pt-wrap{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.pt-row{display:grid;grid-template-columns:110px 60px 110px 1fr;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px}
+.pt-row:last-child{border-bottom:none}
+.pt-row.rnor-r{background:var(--gold-dim)}
+.pt-row.ror-r{background:var(--red-lt)}
+.pt-fy{font-family:var(--mono);font-size:12px;font-weight:500}
+.pt-days{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;padding-right:8px}
+.pt-st{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.st-rnor{background:var(--green-lt);color:var(--green)}
+.st-ror{background:var(--red-lt);color:var(--red)}
+.st-nri{background:var(--blue-lt);color:var(--blue)}
+.pt-note{font-size:11px;color:var(--muted);padding-left:8px;line-height:1.4}
+
+@media(max-width:500px){.metric-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.metric-strip{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <a href="https://www.reddit.com/r/RupeeStories/" target="_blank" rel="noopener">&#8599; r/RupeeStories</a>
+  <a href="https://rupeestories.substack.com" target="_blank" rel="noopener">Rupee Stories Newsletter</a>
+</div>
+
+<div class="hero-banner">
+  <h1>401k / IRA <em>India Return</em> Planner</h1>
+  <p>Plan the India and US tax impact of your retirement accounts across your RNOR window, Section 89A election, Roth conversion calendar, and FTC strategy.</p>
+  <div class="hero-pills">
+    <span class="pill" onclick="showPage('glossary','g-rnor')">RNOR Window</span>
+    <span class="pill" onclick="showPage('glossary','g-89a')">Section 89A</span>
+    <span class="pill" onclick="showPage('glossary','g-dtaa')">DTAA Article 20</span>
+    <span class="pill" onclick="showPage('glossary','g-ftc')">Foreign Tax Credit</span>
+    <span class="pill" onclick="showPage('glossary','g-rmd')">RMD Planning</span>
+    <span class="pill" onclick="showPage('glossary','g-income-type')">India Tax Treatment</span>
+  </div>
+  <div class="pnav">
+    <button class="pnav-btn active" id="pnav-planner" onclick="showPage('planner')">⚙ Planner</button>
+    <button class="pnav-btn" id="pnav-glossary" onclick="showPage('glossary')">📖 Glossary</button>
+    <button class="pnav-btn" id="pnav-assumptions" onclick="showPage('assumptions')">📋 Assumptions</button>
+  </div>
+</div>
+
+<!-- ═══ PLANNER PAGE ═══ -->
+<div id="page-planner" class="pg active">
+<div class="shell">
+
+  <div class="card cc">
+    <div class="ig">
+      <div class="igrp">
+        <div class="pt">About You</div>
+        <div class="field">
+          <label>Current Age</label>
+          <input type="range" id="in-age" min="28" max="72" value="45" oninput="sv(this,'v-age',v=>v+' yrs');calc()">
+          <div class="fv" id="v-age">45 yrs</div>
+        </div>
+        <div class="field">
+          <label>Return Year to India</label>
+          <input type="range" id="in-ret" min="2024" max="2033" value="2026" oninput="sv(this,'v-ret',v=>v);calc()">
+          <div class="fv" id="v-ret">2026</div>
+        </div>
+        <div class="field">
+          <label>Years in US (approx.)</label>
+          <input type="range" id="in-yrs" min="1" max="25" value="15" oninput="sv(this,'v-yrs',v=>v+' yrs');calc()">
+          <div class="fv" id="v-yrs">15 yrs</div>
+        </div>
+        <div class="field">
+          <label>US Immigration Status</label>
+          <select id="in-status" onchange="calc()">
+            <option value="h1b">H1B / L1 / EAD (not USC/GC)</option>
+            <option value="gc">Green Card Holder</option>
+            <option value="usc">US Citizen</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>USD / INR Rate</label>
+          <input type="range" id="in-fx" min="78" max="98" value="84" oninput="sv(this,'v-fx',v=>'₹'+v);calc()">
+          <div class="fv" id="v-fx">₹84</div>
+        </div>
+      </div>
+
+      <div class="igrp">
+        <div class="pt">Your Accounts</div>
+        <div class="field">
+          <label>Pre-tax 401k / Traditional IRA ($K)</label>
+          <input type="range" id="in-trad" min="0" max="2000" step="25" value="500" oninput="sv(this,'v-trad',v=>'$'+fm(v*1000));calc()">
+          <div class="fv" id="v-trad">$500,000</div>
+        </div>
+        <div class="field">
+          <label>Roth 401k / Roth IRA ($K)</label>
+          <input type="range" id="in-roth" min="0" max="1000" step="10" value="100" oninput="sv(this,'v-roth',v=>'$'+fm(v*1000));calc()">
+          <div class="fv" id="v-roth">$100,000</div>
+        </div>
+        <div class="dvd"></div>
+        <div class="field">
+          <label>India Income After Return (₹L/yr)</label>
+          <input type="range" id="in-inc" min="0" max="50" value="12" oninput="sv(this,'v-inc',v=>'₹'+v+'L');calc()">
+          <div class="fv" id="v-inc">₹12L</div>
+        </div>
+        <div class="field">
+          <label>Pre-tax Withdrawal Amount (% of balance)</label>
+          <input type="range" id="in-wd" min="0" max="100" step="5" value="100" oninput="sv(this,'v-wd',v=>v+'%');calc()">
+          <div class="fv" id="v-wd">100%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RNOR BAND -->
+  <div class="rnor-band">
+    <div class="rnor-band-lbl">Estimated RNOR Window</div>
+    <div class="rnor-band-title">You likely qualify for a <span id="rnor-yr">3-year</span> RNOR window</div>
+    <div class="rnor-band-desc" id="rnor-desc">Based on 15 years in the US — India does not tax foreign income during RNOR. Your best window for 401k withdrawals or Roth conversions.</div>
+    <div class="rnor-track"><div class="rnor-prog" id="rnor-prog" style="width:65%"></div></div>
+    <div class="rnor-dates"><span id="rnor-s">Return: 2026</span><span id="rnor-e">RNOR ends: ~2029</span></div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="metric-strip">
+    <div class="mc border-ink">
+      <div class="mc-lbl">Pre-tax Balance</div>
+      <div class="mc-val" id="mc-trad">$500K</div>
+      <div class="mc-sub">Taxable on withdrawal</div>
+    </div>
+    <div class="mc border-gold">
+      <div class="mc-lbl">Roth Balance</div>
+      <div class="mc-val gold" id="mc-roth">$100K</div>
+      <div class="mc-sub">US tax-free after 59½</div>
+    </div>
+    <div class="mc border-ink">
+      <div class="mc-lbl">India Eff. Rate (as ROR)</div>
+      <div class="mc-val" id="mc-imr">—</div>
+      <div class="mc-sub">On withdrawal at slab rates</div>
+    </div>
+    <div class="mc border-green">
+      <div class="mc-lbl">Net India Tax (after FTC)</div>
+      <div class="mc-val green" id="mc-save">—</div>
+      <div class="mc-sub">US federal tax credited first</div>
+    </div>
+  </div>
+
+  <div class="insight" id="insight-box">Loading your summary…</div>
+
+  <div id="w-roth" class="warn-box warn-a" style="display:none">
+    <strong>⚠ Roth IRA / Roth 401k — India treatment is unsettled</strong>
+    The US treats qualified Roth withdrawals as tax-free. India has no provision explicitly recognising the Roth structure. Conservative advisors treat Roth gains as Income from Other Sources once you are ROR. This tool excludes India tax on Roth — your actual liability may be higher. Get a CA opinion before assuming Roth is India-tax-free.
+  </div>
+  <div id="w-savings" class="warn-box warn-r" style="display:none">
+    <strong>⚠ US Citizen / Green Card — Savings Clause Blocks Most Treaty Relief</strong>
+    DTAA Article 21 allows the US to tax its citizens and GC holders regardless of treaty provisions. Most DTAA exemptions — including Article 20(2) pension relief — are unavailable to you. Both India and the US will tax your withdrawals. FTC (Form 67) is your primary tool against double taxation.
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-card">
+    <div class="tabs">
+      <button class="tab active" id="tab-sc" onclick="sw('sc')">Strategy</button>
+      <button class="tab" id="tab-rp" onclick="sw('rp')">Roth Plan</button>
+      <button class="tab" id="tab-pj" onclick="sw('pj')">Projection</button>
+      <button class="tab" id="tab-ap" onclick="sw('ap')">Action Plan</button>
+      <button class="tab tab-warn" id="tab-co" onclick="sw('co')">⚠ Compliance</button>
+      <button class="tab" id="tab-uc" onclick="sw('uc')">👤 Use Cases</button>
+    </div>
+
+    <!-- STRATEGY -->
+    <div class="panel active" id="panel-sc">
+      <p class="panel-sub">Total estimated tax cost to access your pre-tax accounts under four strategies. <strong>India tax = Income from Other Sources at slab rates. Full withdrawal amount treated as taxable — conservative, standard CA approach.</strong></p>
+      <div class="leg-row">
+        <span class="leg"><span class="ls" style="background:var(--ink)"></span>US federal tax</span>
+        <span class="leg"><span class="ls" style="background:var(--gold)"></span>India income tax (net of FTC)</span>
+        <span class="leg"><span class="ls" style="background:var(--red)"></span>Early withdrawal penalty</span>
+      </div>
+      <div class="cw"><canvas id="sc-chart"></canvas></div>
+      <div class="scg" id="sc-cards"></div>
+    </div>
+
+    <!-- ROTH PLAN -->
+    <div class="panel" id="panel-rp">
+      <p class="panel-sub">Year-by-year Roth conversion calendar. <strong style="color:var(--orange)">Gold rows = RNOR years</strong> — India does not tax foreign income. Spread conversions to stay in lower US brackets and maximise RNOR exemption.</p>
+      <div id="rp-content"></div>
+      <div class="warn-box warn-a" style="margin-top:14px">
+        <strong>Note on Roth + India</strong> Roth conversions are taxable as ordinary income in the US. The benefit is locking future growth into a US-tax-free structure. India's treatment of future Roth withdrawals is unsettled — Section 89A deferral is <strong>not available</strong> for Roth accounts. Discuss with a CA before assuming Roth is fully India-exempt.
+      </div>
+    </div>
+
+    <!-- PROJECTION -->
+    <div class="panel" id="panel-pj">
+      <p class="panel-sub">Account value over time at 7% annual growth. For illustration only — no new contributions modeled.</p>
+      <div class="cw"><canvas id="pj-chart"></canvas></div>
+      <div id="pj-table"></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    <div class="panel" id="panel-ap">
+      <div id="ap-content"></div>
+    </div>
+
+    <!-- COMPLIANCE -->
+    <div class="panel" id="panel-co">
+
+      <div class="cs-section">
+        <div class="cs-title">India Tax Treatment of 401k / IRA Withdrawals</div>
+        <div class="ci-grid">
+          <div class="ci ci-warn">
+            <div class="ci-head"><span class="badge-pill bp-a">INCOME TYPE</span> Withdrawals = Income from Other Sources — NOT Capital Gains</div>
+            <div class="ci-body"><strong>401k and IRA withdrawals are not capital assets under Indian law.</strong> Capital gains treatment — LTCG/STCG classification, 24-month holding period test, 20% rate with indexation — has no statutory basis under the Income Tax Act for 401k/IRA. <strong>The correct and widely-followed approach is Income from Other Sources, taxed at slab rates.</strong> This materially changes the India tax calculation and eliminates any LTCG benefit.</div>
+          </div>
+          <div class="ci ci-warn">
+            <div class="ci-head"><span class="badge-pill bp-a">TAXABLE BASIS</span> Full Withdrawal Amount Taxable — Conservative Standard Approach</div>
+            <div class="ci-body">Some advisors argue only the income component (gains above cost basis) should be taxable in India, not the return of principal. <strong>This view has no explicit statutory support in the Income Tax Act or any CBDT circular.</strong> Most practising CAs treat the full withdrawal as taxable income in India. FTC is then applied against US tax paid. This tool follows the full-withdrawal approach. If you hold a different position, get a written opinion from your CA.</div>
+          </div>
+          <div class="ci ci-warn">
+            <div class="ci-head"><span class="badge-pill bp-a">ADVANCE TAX</span> Section 234B — Interest on Large Withdrawals</div>
+            <div class="ci-body"><strong>If your India tax liability in a year exceeds ₹10,000, advance tax payments are mandatory.</strong> Large 401k withdrawals can trigger significant 234B interest if not planned. Instalments due: 15 Jun (15%), 15 Sep (45%), 15 Dec (75%), 15 Mar (100%). Plan this before making any withdrawal as ROR — calculate your expected liability early in the year and set up advance tax payments accordingly.</div>
+          </div>
+          <div class="ci ci-ok">
+            <div class="ci-head"><span class="badge-pill bp-g">FTC</span> Foreign Tax Credit — Form 67</div>
+            <div class="ci-body">File Form 67 with your Indian ITR in the withdrawal year — <strong>before your ITR submission, not after.</strong> FTC is proportionate and capped at your India tax liability on the same income. <strong>For most returning NRIs, US federal tax exceeds India slab tax, so net India tax after FTC is close to zero.</strong> This is the primary mechanism preventing double taxation for the vast majority of cases.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-section">
+        <div class="cs-title">Section 89A — Tax Deferral Election</div>
+        <div class="ci-grid">
+          <div class="ci ci-info">
+            <div class="ci-head"><span class="badge-pill bp-b">WHAT IT IS</span> Section 89A — Defer India Tax to Year of Withdrawal</div>
+            <div class="ci-body">Introduced by Finance Act 2021. Allows ROR residents to defer India tax on foreign retirement accounts until the US also taxes them — eliminating the annual accrual mismatch. Rule 21AAA prescribes the procedure. <strong>Available for accounts in US, UK, and Canada (currently notified countries).</strong> Without this election, India can tax annual account growth even if no withdrawal is made.</div>
+          </div>
+          <div class="ci ci-crit">
+            <div class="ci-head"><span class="badge-pill bp-r">ONE-TIME DEADLINE</span> Form 10EE — First Year of ROR Only</div>
+            <div class="ci-body"><strong>File Form 10EE online on the Income Tax Portal in your first year of ROR status, on or before your ITR due date.</strong> Miss this window = permanently lose Section 89A deferral. Once filed: irrevocable, applies to all notified accounts together, cannot be withdrawn, covers all subsequent years. You cannot selectively apply it to some accounts and not others.</div>
+          </div>
+          <div class="ci ci-warn">
+            <div class="ci-head"><span class="badge-pill bp-a">CONDITIONS APPLY</span> Re-emigration Risk Under Rule 21AAA — Conditional, Not Automatic</div>
+            <div class="ci-body">If you leave India after filing Form 10EE and become a non-resident, all previously deferred income may be taxed in the year you become NR — potentially a large bunched tax bill. <strong>Important: this risk applies only if (a) you filed Form 10EE AND (b) the fund is officially notified under Rule 21AAA.</strong> It is not triggered automatically for all 401k/IRA holders. Verify notified status with a CA before planning around this risk.</div>
+          </div>
+          <div class="ci ci-info">
+            <div class="ci-head"><span class="badge-pill bp-b">ROTH</span> Section 89A Not Available for Roth Accounts</div>
+            <div class="ci-body">The deferral election under Section 89A cannot be made for Roth IRA or Roth 401k. India has no provision recognising the Roth tax-free structure — gains may be taxable as income once you are ROR. This is an unsettled area with no CBDT clarity. Do not assume Roth is India-exempt without a professional opinion.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-section">
+        <div class="cs-title">DTAA — India-USA Treaty</div>
+        <div class="ci-grid">
+          <div class="ci ci-info">
+            <div class="ci-head"><span class="badge-pill bp-b">ARTICLE 20(2)</span> Pension Relief + Savings Clause Limitation</div>
+            <div class="ci-body">Under Article 20(2), periodic pension-type payments (e.g. SEPP/72(t) substantially equal periodic payments) may be exclusively taxable in India — meaning the US does not withhold. <strong>However, the savings clause (Article 21) blocks this entirely for US citizens and Green Card holders</strong> — the US taxes them regardless. For H1B/L1 holders who are not USC/GC, this treaty benefit may apply, but it requires fact-specific professional analysis. FTC remains the practical solution for most returning NRIs.</div>
+          </div>
+          <div class="ci ci-info">
+            <div class="ci-head"><span class="badge-pill bp-b">W-8BEN</span> Dividend Withholding Reduction</div>
+            <div class="ci-body">File W-8BEN with your US custodian (e.g. Fidelity, Schwab) citing Article 10(2)(b) to reduce dividend withholding from 30% to 25%. If you are an NRA for US purposes, file Form 1040NR to claim a refund on excess withholding. <strong>US citizens and GC holders cannot claim NRA status</strong> — US tax rules apply in full regardless of India residency.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-section">
+        <div class="cs-title">Black Money Act — Disclosure Requirements</div>
+        <div class="ci-grid">
+          <div class="ci ci-crit">
+            <div class="ci-head"><span class="badge-pill bp-r">MANDATORY EVERY YEAR</span> Schedule FA / FSI — Annual Foreign Asset Disclosure</div>
+            <div class="ci-body"><strong>Once you become ROR, you must disclose your 401k/IRA balance in Schedule FA every year — even if you make no withdrawal.</strong> 401k is not a bank account; the ₹5L bank exemption does not apply. Report any income in Schedule FSI. ITR filing is mandatory as ROR with foreign assets even if your India income is below the taxable threshold — this includes homemakers. Penalty for non-disclosure: <strong>₹10 lakh per year</strong> under the Black Money Act.</div>
+          </div>
+          <div class="ci ci-crit">
+            <div class="ci-head"><span class="badge-pill bp-r">SEVERE PENALTIES</span> Black Money Act — Burden of Proof on You</div>
+            <div class="ci-body">India's Black Money (Undisclosed Foreign Income and Assets) Act 2015 presumes culpable intent — <strong>you must prove non-disclosure was inadvertent, not the other way around.</strong> No compounding option exists (unlike FEMA or ITA). If you missed prior years: file a revised return, or an updated return under Section 139(8A) (available up to 24 months from end of assessment year). If that window has also passed, write to your Assessing Officer proactively. Do not ignore missed years.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end compliance panel -->
+
+    <!-- USE CASES -->
+    <div class="panel" id="panel-uc">
+      <p class="panel-sub">Four realistic NRI profiles. Click "Load this scenario" to pre-fill all inputs and see the full analysis.</p>
+      <div class="uc-grid">
+        <div class="ucc">
+          <div class="uc-nm">Priya — Long H1B, Early Planner</div>
+          <div class="uc-sub">18 years in US · returning at 44</div>
+          <div class="uc-tags"><span class="uc-tag">H1B / L1</span><span class="uc-tag">3-yr RNOR</span><span class="uc-tag">Under 59½</span></div>
+          <div class="uc-hi">$600K pre-tax, $150K Roth. Under 59½ — can't withdraw without penalty. Wants to use RNOR window for Roth conversions. Section 89A as backup once ROR.</div>
+          <button class="uc-btn" onclick="loadUC('priya')">Load this scenario →</button>
+        </div>
+        <div class="ucc">
+          <div class="uc-nm">Ravi — Green Card, Dual Filer</div>
+          <div class="uc-sub">14 years in US · returning at 52</div>
+          <div class="uc-tags"><span class="uc-tag">Green Card</span><span class="uc-tag">2-yr RNOR</span><span class="uc-tag">Savings clause</span></div>
+          <div class="uc-hi">$800K pre-tax, no Roth. GC = savings clause applies, DTAA Article 20 relief unavailable. Both countries tax. FTC coordination is critical — no treaty shortcut.</div>
+          <button class="uc-btn" onclick="loadUC('ravi')">Load this scenario →</button>
+        </div>
+        <div class="ucc">
+          <div class="uc-nm">Suresh — Near Retirement, 58</div>
+          <div class="uc-sub">22 years in US · returning at 58</div>
+          <div class="uc-tags"><span class="uc-tag">H1B → EAD</span><span class="uc-tag">3-yr RNOR</span><span class="uc-tag">Near 59½</span></div>
+          <div class="uc-hi">$1.2M pre-tax, $200K Roth. Turns 59½ during RNOR. Can withdraw penalty-free soon. Spread withdrawals across RNOR years, minimise India exposure. RMDs start at 73.</div>
+          <button class="uc-btn" onclick="loadUC('suresh')">Load this scenario →</button>
+        </div>
+        <div class="ucc">
+          <div class="uc-nm">Ananya — US Citizen, Conservative</div>
+          <div class="uc-sub">20 years in US · returning at 50</div>
+          <div class="uc-tags"><span class="uc-tag">US Citizen</span><span class="uc-tag">3-yr RNOR</span><span class="uc-tag">Treaty limited</span></div>
+          <div class="uc-hi">$900K pre-tax, $300K Roth. Files US taxes forever. Most DTAA benefits blocked. FBAR required annually. FTC + careful withdrawal timing = only levers available.</div>
+          <button class="uc-btn" onclick="loadUC('ananya')">Load this scenario →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end tab-card -->
+
+  <div class="fnav">
+    <a onclick="showPage('assumptions')">📋 Assumptions & Limitations</a> ·
+    <a onclick="showPage('glossary')">📖 Glossary</a>
+  </div>
+
+</div>
+</div><!-- /planner page -->
+
+<!-- ═══ GLOSSARY PAGE ═══ -->
+<div id="page-glossary" class="pg">
+<div class="shell">
+  <button class="gback" onclick="showPage('planner')">← Back to Planner</button>
+  <h2 style="font-family:var(--serif);font-size:28px;font-weight:900;color:var(--ink);margin-bottom:8px">Glossary</h2>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:6px">Tap any badge in the header to jump directly to a term.</p>
+
+  <div class="gs-title">US Retirement Accounts</div>
+  <div class="gg">
+    <div class="gi"><div class="gi-term">Traditional 401k / 403b</div><div class="gi-def">Employer-sponsored, pre-tax contributions. All withdrawals taxed as ordinary income in the US at applicable rates. 10% early withdrawal penalty before age 59½ (exceptions apply). RMDs start at age 73.</div></div>
+    <div class="gi"><div class="gi-term">Traditional IRA</div><div class="gi-def">Individual Retirement Account with pre-tax contributions. Same US treatment as 401k. 2025 contribution limit: $7,000/year ($8,000 if 50+). RMDs apply at 73. Consider rolling multiple 401k accounts into one IRA before returning — <strong>Fidelity supports Indian addresses.</strong></div></div>
+    <div class="gi"><div class="gi-term">Roth IRA / Roth 401k</div><div class="gi-def">After-tax contributions. <strong>In the US: qualified withdrawals (age 59½+, 5-year-old account) are completely tax-free.</strong> India does not explicitly recognise this structure. Conservative advisors treat Roth gains as Income from Other Sources once you are ROR. Section 89A deferral is <strong>not available</strong> for Roth accounts.</div></div>
+    <div id="g-rmd" class="gi"><div class="gi-term">RMD — Required Minimum Distribution</div><div class="gi-def">IRS-mandated annual minimum withdrawals from traditional 401k/IRA starting at age 73 (SECURE 2.0). Calculated as balance ÷ life expectancy factor from IRS tables. Roth IRAs have no RMDs during the owner's lifetime. Missing RMDs = 25% IRS excise tax on the shortfall.</div></div>
+    <div class="gi"><div class="gi-term">Roth Conversion</div><div class="gi-def">Moving funds from a Traditional 401k/IRA to a Roth IRA. Converted amount is ordinary income in the US in the conversion year. <strong>During RNOR: India does not tax this foreign income.</strong> Optimal strategy: spread over 2–3 RNOR years to stay in lower US brackets.</div></div>
+    <div class="gi"><div class="gi-term">SEPP / 72(t) — Substantially Equal Periodic Payments</div><div class="gi-def">IRS exception allowing penalty-free withdrawals before 59½ using one of three approved actuarial methods. Must continue for 5 years or until age 59½. Relevant for DTAA Article 20(2) analysis — but the savings clause blocks this relief for USC/GC holders.</div></div>
+  </div>
+
+  <div class="gs-title">Indian Tax Concepts</div>
+  <div class="gg">
+    <div id="g-rnor" class="gi"><div class="gi-term">RNOR — Resident but Not Ordinarily Resident</div><div class="gi-def"><strong>Key benefit: India does NOT tax foreign-sourced income during RNOR.</strong> You qualify if NRI in 9 of the 10 preceding FYs, OR if total India stay in the 7 preceding FYs ≤ 729 days. Typically 2–3 years for long-term US residents returning. After RNOR, you become ROR and all global income is taxable in India.</div></div>
+    <div class="gi"><div class="gi-term">ROR — Resident and Ordinarily Resident</div><div class="gi-def">Default resident status after RNOR window expires. India taxes worldwide income. Must file Schedule FA (foreign assets) and Schedule FSI (foreign source income) every year. ITR filing mandatory regardless of India income level if foreign assets are held.</div></div>
+    <div id="g-income-type" class="gi"><div class="gi-term">India Tax Treatment of 401k/IRA — Income from Other Sources</div><div class="gi-def"><strong>401k and IRA withdrawals are taxed as Income from Other Sources at applicable slab rates.</strong> Capital gains classification — LTCG/STCG, 24-month holding test, 20% with indexation — is not applicable. There is no statutory basis for capital gains treatment under the Income Tax Act. <strong>Full withdrawal amount is the standard taxable basis</strong> (not just gains above cost basis, which has no CBDT backing). This materially changes the India tax outcome vs. what some sources incorrectly state.</div></div>
+    <div class="gi"><div class="gi-term">India New Tax Regime — FY 2025-26 (Budget 2025)</div><div class="gi-def">0–4L: 0% · 4–8L: 5% · 8–12L: 10% · 12–16L: 15% · 16–20L: 20% · 20–24L: 25% · &gt;24L: 30%. Section 87A rebate: income ≤ ₹12L → net tax effectively ₹0. 4% Health &amp; Education cess on all tax. <strong>401k/IRA withdrawal is added to other India income and the combined total taxed at slab rates as Income from Other Sources.</strong></div></div>
+    <div id="g-89a" class="gi"><div class="gi-term">Section 89A — Foreign Retirement Account Deferral</div><div class="gi-def">Defer India tax on foreign retirement accounts to the year of withdrawal, matching US timing. <strong>File Form 10EE in your first year of ROR — one-time, irrevocable election.</strong> Applies to all notified accounts together. Re-emigration risk: <em>if you filed Form 10EE and the fund is notified under Rule 21AAA</em>, becoming NR again triggers tax on all deferred income in the NR year. Not available for Roth accounts.</div></div>
+    <div id="g-ftc" class="gi"><div class="gi-term">FTC — Foreign Tax Credit (Form 67)</div><div class="gi-def">Claim credit for US taxes paid on income also taxable in India. <strong>File Form 67 before your ITR submission</strong> — cannot be backdated. FTC is proportionate and capped at India tax liability. For most returning NRIs, US federal tax exceeds India slab tax, making net India tax close to zero. This is the primary double-tax prevention mechanism.</div></div>
+    <div class="gi"><div class="gi-term">Section 234B — Advance Tax Interest</div><div class="gi-def">If India tax liability exceeds ₹10,000, advance tax must be paid in instalments. <strong>Large 401k withdrawals frequently trigger 234B interest if advance tax is not paid.</strong> Dates: 15 Jun (15%), 15 Sep (45%), 15 Dec (75%), 15 Mar (100%). Plan this before making any withdrawal as ROR — not after.</div></div>
+    <div class="gi"><div class="gi-term">Schedule FA — Foreign Assets Disclosure</div><div class="gi-def"><strong>Mandatory every year once ROR</strong>, even if no withdrawal. 401k is not a bank account — the ₹5L bank exemption does not apply. Penalty for non-disclosure: ₹10 lakh/year under the Black Money Act. Includes homemakers who contributed to 401k while in the US and now have no India income.</div></div>
+  </div>
+
+  <div class="gs-title">US Tax & Legal</div>
+  <div class="gg">
+    <div class="gi"><div class="gi-term">US Federal Tax Brackets (2025, Single Filer)</div><div class="gi-def">Standard deduction $15,000. Rates: 10% · 12% · 22% · 24% · 32% · 35% · 37%. <strong>401k withdrawals are ordinary income in the US — no capital gains rate applies in either country.</strong> US state income tax varies; eliminating state residency before departure removes this layer entirely.</div></div>
+    <div id="g-dtaa" class="gi"><div class="gi-term">DTAA Article 20 — India-USA Pensions & Savings Clause</div><div class="gi-def">Article 20(2): periodic pension payments (SEPP) may be exclusively taxable in India. <strong>The savings clause (Article 21) overrides this for US citizens and GC holders — both countries tax regardless of the treaty.</strong> For H1B holders not in USC/GC category, treaty relief on periodic payments may be available but requires professional analysis. FTC is the practical tool for the vast majority.</div></div>
+    <div class="gi"><div class="gi-term">W-8BEN</div><div class="gi-def">IRS form to certify non-resident alien status and claim treaty rates with your US custodian. Cite Article 10(2)(b) for dividends — reduces withholding from 30% to 25%. <strong>Fidelity, Schwab, and Vanguard all support IRA accounts with Indian addresses.</strong> USC and GC holders cannot claim NRA status.</div></div>
+    <div class="gi"><div class="gi-term">FATCA / CRS</div><div class="gi-def">Foreign Account Tax Compliance Act (US) and Common Reporting Standard (OECD global). US institutions report NRA account holders; Indian institutions report Indian-resident foreign account holders. <strong>Your 401k/IRA balance is automatically visible to Indian tax authorities once you are a reportable person.</strong> Non-disclosure is not a practical option.</div></div>
+  </div>
+</div>
+</div><!-- /glossary -->
+
+<!-- ═══ ASSUMPTIONS PAGE ═══ -->
+<div id="page-assumptions" class="pg">
+<div class="shell">
+  <button class="gback" onclick="showPage('planner')">← Back to Planner</button>
+  <h2 style="font-family:var(--serif);font-size:28px;font-weight:900;color:var(--ink);margin-bottom:16px">Assumptions & Limitations</h2>
+  <div class="ag">
+    <div class="ac">
+      <div class="ac-title">📐 Tax Calculation Method</div>
+      <ul>
+        <li>US: 2025 federal brackets, single filer, $15,000 standard deduction</li>
+        <li>India: New Tax Regime FY 2025-26 (Budget 2025 slabs)</li>
+        <li>India treatment: Income from Other Sources at slab rates — NOT capital gains</li>
+        <li>Full withdrawal amount treated as taxable in India (conservative standard)</li>
+        <li>FTC = min(India slab tax, US federal tax) — simplified proportionate offset</li>
+        <li>Section 87A rebate: income ≤ ₹12L = effectively zero tax</li>
+        <li>4% Health & Education cess applied to India tax</li>
+      </ul>
+    </div>
+    <div class="ac">
+      <div class="ac-title">📊 Estimates & Approximations</div>
+      <ul>
+        <li>RNOR window based on years-in-US heuristic (actual = day-count tests)</li>
+        <li>Projection assumes 7% annual growth, no additional contributions</li>
+        <li>US state income tax not included (eliminate via residency break)</li>
+        <li>Exchange rate based on user input (default ₹84/USD)</li>
+        <li>Surcharge: simplified; full calculation varies by income level</li>
+      </ul>
+    </div>
+    <div class="ac">
+      <div class="ac-title">⚠ Known Limitations</div>
+      <ul>
+        <li>Does not model married filing jointly (US) — joint filers pay less</li>
+        <li>Roth India tax excluded — actual India liability may be higher</li>
+        <li>Section 89A notified-fund status not verified for specific accounts</li>
+        <li>DTAA Article 20(2) periodic payment benefit not modeled (too fact-specific)</li>
+        <li>Section 234B advance tax not shown as a line item cost</li>
+        <li>FBAR, Form 8938, and other US disclosure obligations not shown</li>
+      </ul>
+    </div>
+    <div class="ac">
+      <div class="ac-title">✅ What Changed From Common Misconceptions</div>
+      <ul>
+        <li>Capital gains classification removed — no statutory basis for 401k/IRA</li>
+        <li>Partial taxation (income component only) removed — no CBDT backing</li>
+        <li>Re-emigration risk clarified as conditional, not automatic</li>
+        <li>DTAA Article 20(2) relief shown only as possible for non-USC/GC</li>
+        <li>Advance tax obligation added as a compliance action item</li>
+        <li>India slab rates as of Budget 2025 (new regime)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="disclaimer-box">
+    <div class="disclaimer-icon">⚠️</div>
+    <div class="disclaimer-text">
+      <strong>Not financial or tax advice</strong>
+      <p>This tool is for planning and education only. Tax laws, DTAA interpretation, Section 89A eligibility, Roth India treatment, advance tax obligations, and Black Money Act compliance all require professional guidance. Always work with a CA experienced in US-India cross-border taxation before acting on any figures shown here.</p>
+    </div>
+  </div>
+</div>
+</div><!-- /assumptions -->
+
+<script>
+// ─── UTILS ───
+function fm(n){if(n>=1e6)return(n/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return Math.round(n).toLocaleString();}
+function fi(n){if(n>=1e7)return'₹'+(n/1e7).toFixed(1)+'Cr';if(n>=1e5)return'₹'+(n/1e5).toFixed(1)+'L';return'₹'+Math.round(n).toLocaleString();}
+function sv(el,id,fn){document.getElementById(id).textContent=fn(+el.value);}
+
+// ─── US FEDERAL TAX 2025 (single, standard deduction $15K) ───
+function usTax(usd){
+  var td=Math.max(0,usd-15000),t=0;
+  if(td>626350)t+=(td-626350)*0.37;
+  if(td>250525)t+=Math.min(td,626350-250525)*0.35;
+  if(td>197300)t+=Math.min(td-197300,250525-197300)*0.32;
+  if(td>103350)t+=Math.min(td-103350,197300-103350)*0.24;
+  if(td>48475)t+=Math.min(td-48475,103350-48475)*0.22;
+  if(td>11925)t+=Math.min(td-11925,48475-11925)*0.12;
+  if(td>0)t+=Math.min(td,11925)*0.10;
+  return Math.round(t);
+}
+
+// ─── INDIA TAX — New Regime FY25-26 ───
+function indiaTax(inr){
+  var t=0;
+  const slabs=[[400000,0],[800000,.05],[1200000,.10],[1600000,.15],[2000000,.20],[2400000,.25],[Infinity,.30]];
+  var prev=0;
+  for(var i=0;i<slabs.length;i++){
+    var [cap,rate]=slabs[i];
+    if(inr>prev){t+=(Math.min(inr,cap)-prev)*rate;}
+    prev=cap;if(inr<=cap)break;
+  }
+  // 87A rebate FY26: ≤12L = zero; marginal relief above
+  if(inr<=1200000){t=0;}
+  else{t=Math.max(0,Math.min(t,inr-1200000));}
+  // Surcharge (simplified new regime)
+  if(inr>20000000)t*=1.25;
+  else if(inr>10000000)t*=1.15;
+  else if(inr>5000000)t*=1.10;
+  return Math.round(t*1.04); // 4% cess
+}
+
+// ─── RNOR WINDOW ───
+function rnorYrs(yrs){return yrs>=10?3:yrs>=7?2:yrs>=4?1:0;}
+
+// ─── GET INPUTS ───
+function gi(){
+  return{
+    age:+document.getElementById('in-age').value,
+    ret:+document.getElementById('in-ret').value,
+    yrs:+document.getElementById('in-yrs').value,
+    status:document.getElementById('in-status').value,
+    fx:+document.getElementById('in-fx').value,
+    tradK:+document.getElementById('in-trad').value,
+    rothK:+document.getElementById('in-roth').value,
+    incL:+document.getElementById('in-inc').value,
+    wdPct:+document.getElementById('in-wd').value
+  };
+}
+
+let scChart=null,pjChart=null;
+
+function calc(){
+  const I=gi();
+  const tradUSD=I.tradK*1000,rothUSD=I.rothK*1000;
+  const incINR=I.incL*1e5;
+  const rnor=rnorYrs(I.yrs),rnorEnd=I.ret+rnor;
+  const under59=I.age<59.5;
+  const wdUSD=tradUSD*(I.wdPct/100),wdINR=wdUSD*I.fx;
+
+  // RNOR bar
+  document.getElementById('rnor-prog').style.width=(rnor===0?4:Math.min(100,(rnor/3)*100))+'%';
+  document.getElementById('rnor-yr').textContent=rnor>0?rnor+'-year':'no';
+  document.getElementById('rnor-s').textContent='Return: '+I.ret;
+  document.getElementById('rnor-e').textContent=rnor>0?'RNOR ends: ~'+rnorEnd:'ROR from arrival';
+  document.getElementById('rnor-desc').textContent=rnor>0
+    ?`Based on ${I.yrs} years in the US. During RNOR, India does not tax foreign-sourced income — your key window for 401k withdrawals or Roth conversions.`
+    :`Based on ${I.yrs} years in the US, you may not qualify for RNOR. Verify exact day counts with a CA — you could be ROR from day one.`;
+
+  // Metrics
+  document.getElementById('mc-trad').textContent='$'+fm(tradUSD);
+  document.getElementById('mc-roth').textContent='$'+fm(rothUSD);
+
+  // India tax on 401k withdrawal as ROR
+  // Full withdrawal treated as taxable income (Income from Other Sources at slab rates)
+  const itTotal=indiaTax(incINR+wdINR);
+  const itBase=indiaTax(incINR);
+  const it401k=Math.max(0,itTotal-itBase);
+  const usT=usTax(wdUSD);
+  const ftc=Math.min(it401k,usT);
+  const netIndia=Math.max(0,it401k-ftc);
+  const effRate=wdINR>0?it401k/wdINR:0;
+
+  document.getElementById('mc-imr').textContent=wdINR>0?(effRate*100).toFixed(1)+'%':'—';
+  document.getElementById('mc-save').textContent=wdINR>0
+    ?(netIndia<5000?'≈ ₹0 (FTC covers)':fi(netIndia)+' net')
+    :'—';
+
+  // Insight
+  let ins='';
+  if(rnor>=2&&tradUSD>0){
+    ins=`<strong>You have a ${rnor}-year RNOR window</strong> — act on it. Withdrawing or converting your $${fm(tradUSD)} pre-tax balance during RNOR: India charges zero. You pay US federal tax${under59?' + 10% early withdrawal penalty (consider SEPP/72(t))':''}. After RNOR as ROR: India slab rate ~${(effRate*100).toFixed(0)}% on withdrawal${netIndia<5000?' — largely eliminated by FTC.':`, net of FTC: ${fi(netIndia)}.`} File Form 10EE in your first ROR year regardless.`;
+  } else if(rnor===0){
+    ins=`<strong>You may not qualify for RNOR</strong> — consult a CA urgently. If ROR from day one, India taxes your 401k accruals each year unless you file Form 10EE (Section 89A deferral) in your first ROR year. India effective rate on this withdrawal: ~${(effRate*100).toFixed(0)}%. FTC can offset India slab tax against US federal tax paid.`;
+  } else {
+    ins=`<strong>You have a ${rnor}-year RNOR window</strong> ending ~${rnorEnd}. Use it — withdraw or convert before becoming ROR. After RNOR: India rate ~${(effRate*100).toFixed(0)}%${netIndia<5000?', largely offset by FTC':`, net India tax ~${fi(netIndia)} after FTC`}. File Form 10EE in your first ROR year as mandatory backup.`;
+  }
+  document.getElementById('insight-box').innerHTML=ins;
+
+  // Warnings
+  document.getElementById('w-roth').style.display=rothUSD>0?'block':'none';
+  document.getElementById('w-savings').style.display=(I.status==='usc'||I.status==='gc')?'block':'none';
+
+  buildSC(I,wdUSD,wdINR,incINR,under59,it401k,usT,ftc,netIndia);
+  buildRP(I,rnor,tradUSD);
+  buildPJ(I,tradUSD,rothUSD,rnor);
+  buildAP(I,rnor,tradUSD,under59,it401k,usT,wdUSD,wdINR,rnorEnd);
+}
+
+// ─── STRATEGY ───
+function buildSC(I,wdUSD,wdINR,incINR,under59,it401k,usT,ftc,netIndia){
+  const pen=under59?wdUSD*0.10:0;
+  const s=[
+    {n:'Withdraw During RNOR',tag:'✓ Recommended',tc:'tag-g',u:usT,i:0,p:pen,rec:true,note:'India RNOR exemption: ₹0 India tax. US federal only.'+(under59?' 10% penalty applies — consider SEPP/72(t) first.':'')},
+    {n:'Roth Conversion (RNOR)',tag:'✓ Great for long-term',tc:'tag-g',u:usT,i:0,p:0,rec:true,note:'Pay US tax now; future Roth growth US-tax-free. India Roth treatment unsettled — get CA opinion.'},
+    {n:'Hold + Section 89A + FTC',tag:'Best fallback post-RNOR',tc:'tag-a',u:usT,i:netIndia,p:0,rec:false,note:'File Form 10EE in first ROR year. FTC offsets India slab tax. Net India often near zero.'},
+    {n:'No Planning',tag:'✗ Avoid',tc:'tag-r',u:usT,i:it401k,p:pen,rec:false,note:'Full India slab tax with no FTC coordination + US federal + any penalty. Highest cost.'}
+  ];
+  const labels=s.map(x=>x.n);
+  const ctx=document.getElementById('sc-chart').getContext('2d');
+  if(scChart)scChart.destroy();
+  scChart=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'US federal tax',data:s.map(x=>x.u),backgroundColor:'rgba(26,26,46,0.82)'},
+      {label:'India income tax',data:s.map(x=>x.i),backgroundColor:'rgba(201,168,76,0.85)'},
+      {label:'Early withdrawal penalty',data:s.map(x=>x.p),backgroundColor:'rgba(192,57,43,0.85)'}
+    ]},
+    options:{
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: $${fm(c.raw)}`}}},
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{font:{family:'DM Sans',size:11},maxRotation:0}},
+        y:{stacked:true,ticks:{callback:v=>'$'+fm(v),font:{family:'DM Sans',size:11}},grid:{color:'rgba(0,0,0,.04)'}}
+      },responsive:true,maintainAspectRatio:false
+    }
+  });
+  document.getElementById('sc-cards').innerHTML=s.map(st=>`
+    <div class="scc ${st.rec?'rec':''}">
+      <div class="sc-nm">${st.n}</div>
+      <span class="sc-tag ${st.tc}">${st.tag}</span>
+      <div class="sc-row"><span class="lbl">US federal tax</span><span class="val">$${fm(st.u)}</span></div>
+      <div class="sc-row"><span class="lbl">India slab tax (net FTC)</span><span class="val">${st.i>0?'$'+fm(st.i):'—'}</span></div>
+      ${st.p>0?`<div class="sc-row"><span class="lbl">Early withdrawal penalty</span><span class="val" style="color:var(--red)">$${fm(st.p)}</span></div>`:''}
+      <div class="sc-total"><span>Total tax cost</span><span>$${fm(st.u+st.i+st.p)}</span></div>
+      <div class="sc-note">${st.note}</div>
+    </div>`).join('');
+}
+
+// ─── ROTH PLAN ───
+function buildRP(I,rnor,tradUSD){
+  if(tradUSD===0){document.getElementById('rp-content').innerHTML='<p class="panel-sub">No pre-tax balance entered. Adjust the 401k slider to see Roth conversion planning.</p>';return;}
+  const cpY=rnor>0?tradUSD/rnor:0;
+  let rows='';
+  for(let i=0;i<Math.max(rnor,1)+2;i++){
+    const yr=I.ret+i,isRN=i<rnor,conv=isRN?cpY:0;
+    const ut=conv>0?usTax(conv):0,er=conv>0?((ut/conv)*100).toFixed(1)+'%':'—';
+    const st=isRN?'RNOR ✓':i===rnor?'ROR — file Form 10EE':'ROR';
+    rows+=`<tr class="${isRN?'rnr-row':i>=rnor?'ror-row':''}">
+      <td>${yr}</td><td>${st}</td>
+      <td>${conv>0?'$'+fm(conv):'—'}</td>
+      <td>${ut>0?'$'+fm(ut):'—'}</td><td>${er}</td>
+      <td style="color:${isRN?'var(--green)':'var(--muted)'}">
+        ${isRN?'₹0 (exempt)':'India slab rate applies'}
+      </td></tr>`;
+  }
+  document.getElementById('rp-content').innerHTML=`
+    <div class="warn-box warn-g" style="margin-bottom:12px">
+      Spread $${fm(tradUSD)} over ${rnor} RNOR year${rnor!==1?'s':''}: ~$${fm(cpY)}/year → US federal tax ~$${fm(usTax(cpY))}/year. India tax = ₹0 during RNOR.
+    </div>
+    <div style="overflow-x:auto"><table class="rpt">
+      <thead><tr><th>Year</th><th>Status</th><th>Convert</th><th>US Tax</th><th>US Rate</th><th>India Tax</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+}
+
+// ─── PROJECTION ───
+function buildPJ(I,tradUSD,rothUSD,rnor){
+  const G=0.07,YRS=20;
+  const labs=[],noConv=[],withConv=[];
+  let bNC=tradUSD,bWC=tradUSD,rBal=rothUSD;
+  const cpY=rnor>0?tradUSD/rnor:0;
+  for(let y=0;y<=YRS;y++){
+    labs.push(I.ret+y);
+    noConv.push(Math.round(bNC));
+    if(y<rnor){bWC=Math.max(0,bWC-cpY);rBal+=cpY;}
+    withConv.push(Math.round(bWC+rBal));
+    bNC*=(1+G);bWC*=(1+G);rBal*=(1+G);
+  }
+  const ctx=document.getElementById('pj-chart').getContext('2d');
+  if(pjChart)pjChart.destroy();
+  pjChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:labs,datasets:[
+      {label:'No conversion (pre-tax only)',data:noConv,borderColor:'rgba(26,26,46,.7)',backgroundColor:'rgba(26,26,46,.04)',tension:.3,fill:true},
+      {label:'With Roth conversion',data:withConv,borderColor:'rgba(201,168,76,.9)',backgroundColor:'rgba(201,168,76,.04)',tension:.3,fill:true}
+    ]},
+    options:{
+      plugins:{legend:{labels:{font:{family:'DM Sans',size:12}}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:11},maxTicksLimit:8}},
+        y:{ticks:{callback:v=>'$'+fm(v),font:{family:'DM Mono',size:11}},grid:{color:'rgba(0,0,0,.04)'}}
+      },responsive:true,maintainAspectRatio:false
+    }
+  });
+}
+
+// ─── ACTION PLAN ───
+function buildAP(I,rnor,tradUSD,under59,it401k,usT,wdUSD,wdINR,rnorEnd){
+  const cpY=rnor>0?Math.round(tradUSD/rnor):0;
+  const phases=[
+    {
+      title:'Phase 1: Before Leaving the US',
+      items:[
+        {ico:'🔄',cls:'ico-a',title:'Consolidate 401k accounts into a single IRA',desc:'Roll all employer 401k accounts into one Traditional IRA. <strong>Fidelity, Schwab, and Vanguard support Indian addresses.</strong> This rollover is US-tax-free and simplifies annual Schedule FA reporting, withdrawal planning, and W-8BEN filing.'},
+        {ico:'📋',cls:'ico-a',title:'File W-8BEN with your IRA custodian',desc:'Certify NRA status and cite Article 10(2)(b) for dividends — reduces withholding from 30% to 25%. Update your address to India.'+( I.status==='usc'?' Note: As a US citizen, you cannot claim NRA status.':I.status==='gc'?' Note: As a GC holder, NRA status may not apply — verify with a US CPA.':'')},
+        {ico:'🏦',cls:'ico-n',title:'Keep a US bank account active after returning',desc:'Always receive 401k/IRA distributions into a US account, then remit to India. Direct credit to an Indian account risks "income received in India" treatment under Indian tax law, potentially triggering tax even during RNOR or NRI periods.'},
+        ...(I.status==='h1b'?[{ico:'🗺️',cls:'ico-n',title:'Establish a clean state tax residency break',desc:'Cancel voter registration, update all addresses, surrender driver\'s license before departure. States like California aggressively pursue former residents. Moving to a no-income-tax state (FL, TX, NV) before departure eliminates state tax exposure entirely.'}]:[])
+      ]
+    },
+    ...(rnor>0?[{
+      title:`Phase 2: During Your RNOR Window (${I.ret}–${rnorEnd})`,
+      items:[
+        {ico:'💡',cls:'ico-g',title:`Roth conversions — ₹0 India tax during RNOR`,desc:`Spread pre-tax 401k → Roth IRA conversions over ${rnor} RNOR year${rnor>1?'s':''}. India exempts foreign income during RNOR. Optimal: ~$${fm(cpY)}/year → US federal tax ~$${fm(usTax(cpY))}/year. Reduces future RMDs and post-RNOR India exposure.`},
+        ...(I.age>=55?[{ico:'💰',cls:'ico-g',title:I.age>=59.5?'Withdrawals penalty-free (59½+)':'Consider SEPP/72(t) to avoid early penalty',desc:under59?'You\'re under 59½ — 10% early withdrawal penalty applies ($'+fm(wdUSD*0.10)+' at current setting). SEPP/72(t) structured correctly avoids this. Also potentially relevant for DTAA Article 20(2) analysis. Consult a US tax professional before withdrawing early.':'Over 59½ — no penalty. Best window to take distributions while RNOR exemption still applies.'}]:[]),
+        {ico:'📂',cls:'ico-a',title:'Schedule FA/FSI disclosure begins once you file ITR',desc:'Even during RNOR, once you file an Indian ITR, disclose your 401k/IRA in Schedule FA. Non-disclosure penalty = ₹10 lakh/year under the Black Money Act. This applies to homemakers too if they hold foreign assets.'}
+      ]
+    }]:[]),
+    {
+      title:`Phase 3: First Year of ROR Status (~${rnorEnd})`,
+      items:[
+        {ico:'🚨',cls:'ico-r',title:'FILE FORM 10EE — Critical One-Time Deadline',desc:'File Form 10EE online on the Income Tax Portal <strong>in your first ROR year, before your ITR due date.</strong> Miss this = permanently lose Section 89A deferral. Once filed: irrevocable, covers all notified accounts, all future years. Cannot be selectively applied.'},
+        {ico:'📊',cls:'ico-a',title:'Set up advance tax payments (Section 234B)',desc:'If you plan a large withdrawal this year, calculate India tax liability early. <strong>Advance tax instalments: 15 Jun (15%), 15 Sep (45%), 15 Dec (75%), 15 Mar (100%).</strong> Failure = 1%/month interest. Plan this before the withdrawal, not after.'},
+        {ico:'📋',cls:'ico-n',title:'Annual Schedule FA/FSI disclosure — mandatory every year',desc:'Disclose 401k/IRA balance in Schedule FA every year regardless of withdrawal activity. Income in Schedule FSI. ITR filing mandatory as ROR with foreign assets regardless of India income level.'}
+      ]
+    },
+    {
+      title:'Phase 4: Year of Withdrawal (as ROR)',
+      items:[
+        {ico:'💸',cls:'ico-n',title:'Receive distribution in US account, then remit',desc:'Withdrawal hits your US bank. Pay US federal tax. File US return (1040 or 1040NR). Then remit to India bank account separately.'},
+        {ico:'📝',cls:'ico-g',title:'File Form 67 before your Indian ITR — claim Foreign Tax Credit',desc:'File Form 67 before submitting your ITR in the withdrawal year. Claim FTC for US federal tax paid. Net India tax = max(0, India slab tax − US federal tax). For most returning NRIs, FTC reduces net India tax close to zero.'},
+        ...(it401k>50000?[{ico:'⏱️',cls:'ico-r',title:'Pay advance tax on 401k withdrawal amount',desc:`Your estimated India slab tax on this withdrawal (~${fi(it401k)} before FTC) exceeds ₹10,000. Pay advance tax by due dates to avoid Section 234B interest. Work out the schedule with your CA before making the withdrawal.`}]:[])
+      ]
+    }
+  ];
+
+  document.getElementById('ap-content').innerHTML=phases.map(p=>`
+    <div class="phase">
+      <div class="phase-title">${p.title}</div>
+      ${p.items.map(it=>`
+        <div class="action">
+          <div class="act-ico ${it.cls}">${it.ico}</div>
+          <div class="act-body">
+            <div class="act-title">${it.title}</div>
+            <div class="act-desc">${it.desc}</div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+// ─── USE CASES ───
+function loadUC(id){
+  const cases={
+    priya:{age:44,ret:2026,yrs:18,status:'h1b',fx:84,tradK:600,rothK:150,incL:10,wdPct:60},
+    ravi:{age:52,ret:2026,yrs:14,status:'gc',fx:84,tradK:800,rothK:0,incL:15,wdPct:100},
+    suresh:{age:58,ret:2026,yrs:22,status:'h1b',fx:84,tradK:1200,rothK:200,incL:8,wdPct:50},
+    ananya:{age:50,ret:2026,yrs:20,status:'usc',fx:84,tradK:900,rothK:300,incL:12,wdPct:80}
+  };
+  const c=cases[id];if(!c)return;
+  document.getElementById('in-age').value=c.age; document.getElementById('v-age').textContent=c.age+' yrs';
+  document.getElementById('in-ret').value=c.ret; document.getElementById('v-ret').textContent=c.ret;
+  document.getElementById('in-yrs').value=c.yrs; document.getElementById('v-yrs').textContent=c.yrs+' yrs';
+  document.getElementById('in-status').value=c.status;
+  document.getElementById('in-fx').value=c.fx; document.getElementById('v-fx').textContent='₹'+c.fx;
+  document.getElementById('in-trad').value=c.tradK; document.getElementById('v-trad').textContent='$'+fm(c.tradK*1000);
+  document.getElementById('in-roth').value=c.rothK; document.getElementById('v-roth').textContent='$'+fm(c.rothK*1000);
+  document.getElementById('in-inc').value=c.incL; document.getElementById('v-inc').textContent='₹'+c.incL+'L';
+  document.getElementById('in-wd').value=c.wdPct; document.getElementById('v-wd').textContent=c.wdPct+'%';
+  calc();
+  showPage('planner');
+  sw('sc');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── PAGE NAV ───
+function showPage(pid,anchor){
+  ['planner','glossary','assumptions'].forEach(id=>{
+    document.getElementById('page-'+id).classList.toggle('active',id===pid);
+    const b=document.getElementById('pnav-'+id);
+    if(b)b.classList.toggle('active',id===pid);
+  });
+  if(anchor){
+    setTimeout(()=>{
+      const el=document.getElementById(anchor);
+      if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
+  } else {
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+// ─── TAB NAV ───
+function sw(t){
+  ['sc','rp','pj','ap','co','uc'].forEach(id=>{
+    document.getElementById('panel-'+id).classList.toggle('active',id===t);
+    document.getElementById('tab-'+id).classList.toggle('active',id===t);
+  });
+  setTimeout(()=>{
+    if(t==='sc'&&scChart)scChart.resize();
+    if(t==='pj'&&pjChart)pjChart.resize();
+  },60);
+}
+
+// ─── INIT ───
+calc();
+</script>
+</body>
+</html>
