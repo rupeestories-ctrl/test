@@ -1,805 +1,456 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Live Google Finance Stock Screener</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$10,000 to India: Actual Rupees Delivered</title>
   <style>
     :root {
-      --navy: #0e0e2a;
-      --navy2: #181842;
-      --gold: #c4a054;
-      --cream: #faf6ed;
-      --paper: #fffdf8;
-      --ink: #171717;
-      --muted: #666;
-      --line: #e7dfcf;
-      --green: #0f7a3a;
-      --red: #b42318;
-      --orange: #b76e00;
-      --shadow: 0 12px 30px rgba(14,14,42,0.10);
-      --radius: 18px;
+      --navy: #0A192F;
+      --gold: #D4AF37;
+      --cream: #FFFDD0;
+      --light-navy: #112240;
+      --alert-red: #8B0000;
     }
-
-    * { box-sizing: border-box; }
-
+    
     body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--cream);
+      color: var(--navy);
       margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--cream);
-      color: var(--ink);
-      line-height: 1.45;
+      padding: 20px;
+      line-height: 1.6;
     }
-
-    header {
-      background: linear-gradient(135deg, var(--navy), var(--navy2));
-      color: white;
-      padding: 34px 20px 28px;
-      border-bottom: 5px solid var(--gold);
-    }
-
-    .wrap { max-width: 1260px; margin: 0 auto; }
 
     h1 {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 48px);
-      letter-spacing: -0.04em;
-      line-height: 1.03;
+      color: var(--navy);
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 10px;
+      margin-bottom: 5px;
     }
 
     .subtitle {
-      margin-top: 12px;
-      max-width: 920px;
-      color: rgba(255,255,255,0.84);
-      font-size: 17px;
+      font-size: 0.9em;
+      margin-bottom: 20px;
+      opacity: 0.8;
     }
 
-    .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-
-    .badge {
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      padding: 7px 11px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.9);
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      background: var(--light-navy);
+      color: var(--cream);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
     }
 
-    main { padding: 24px 20px 60px; }
-
-    .grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
-
-    @media (min-width: 980px) {
-      .grid.two { grid-template-columns: 0.92fr 1.08fr; }
-      .grid.three { grid-template-columns: repeat(3, 1fr); }
+    .input-group {
+      display: flex;
+      flex-direction: column;
     }
 
-    .card {
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
+    .input-group label {
+      font-size: 0.85em;
+      margin-bottom: 5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    h2 { margin: 0 0 10px; font-size: 22px; letter-spacing: -0.02em; }
-    h3 { margin: 0 0 8px; font-size: 16px; }
-    p { margin: 8px 0; }
-    .muted { color: var(--muted); }
-
-    textarea {
-      width: 100%;
-      min-height: 190px;
-      resize: vertical;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 13px;
-      background: white;
-      color: #111;
+    input[type="number"], select {
+      padding: 10px;
+      border: 1px solid var(--navy);
+      border-radius: 4px;
+      font-size: 16px;
+      background: var(--cream);
+      color: var(--navy);
     }
 
-    .codebox { min-height: 360px; }
-
-    .controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
-    @media (min-width: 760px) { .controls { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-
-    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 800; }
-
-    input, select {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 11px;
-      background: white;
-      font-size: 14px;
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
-
-    .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 
     button {
-      border: 0;
-      border-radius: 999px;
-      padding: 11px 16px;
-      font-weight: 900;
+      padding: 10px 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
-      background: var(--navy);
-      color: white;
+      transition: opacity 0.2s;
     }
 
-    button.secondary { background: white; color: var(--navy); border: 1px solid var(--line); }
-    button.gold { background: var(--gold); color: #1d1607; }
-    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    button:hover { opacity: 0.9; }
+    
+    .btn-primary { background: var(--gold); color: var(--navy); }
+    .btn-secondary { background: var(--navy); color: var(--cream); border: 1px solid var(--gold); }
 
-    .note {
-      background: #fff7e6;
-      border: 1px solid #f3d28c;
-      color: #51360a;
-      border-radius: 14px;
-      padding: 12px;
-      font-size: 14px;
-      margin-top: 12px;
+    .disclaimer {
+      font-size: 0.85em;
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 4px solid var(--gold);
+      padding: 10px;
+      margin-bottom: 20px;
     }
 
-    .danger { background: #fff1f0; border-color: #ffccc7; color: #6b1816; }
-    .ok { background: #ecfdf3; border-color: #b7ebc6; color: #0f5132; }
-
-    .metric-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    @media (min-width: 880px) { .metric-row { grid-template-columns: repeat(4, 1fr); } }
-
-    .metric { background: white; border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
-    .metric .num { font-size: 28px; font-weight: 950; letter-spacing: -0.03em; margin-top: 4px; font-variant-numeric: tabular-nums; }
-    .metric .label { color: var(--muted); font-size: 13px; font-weight: 800; }
-
-    .table-wrap {
-      width: 100%;
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 16px;
+    .table-container {
+      overflow-x: auto;
       background: white;
-      margin-top: 12px;
-      max-height: 680px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    table { border-collapse: collapse; width: 100%; min-width: 1700px; font-size: 13px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+      text-align: right;
+    }
 
     th, td {
-      padding: 9px 10px;
-      border-bottom: 1px solid #eee7d8;
-      text-align: right;
-      white-space: nowrap;
-      vertical-align: top;
-      font-variant-numeric: tabular-nums;
-      font-feature-settings: "tnum";
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
     }
 
-    th { position: sticky; top: 0; background: var(--navy); color: white; z-index: 3; font-size: 12px; }
-    th:first-child, td:first-child { position: sticky; left: 0; z-index: 2; text-align: left; background: white; }
-    th:first-child { background: var(--navy); z-index: 4; }
+    th {
+      background: var(--navy);
+      color: var(--cream);
+      font-size: 0.85em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
 
-    td.left { text-align: left; }
-    .pass { color: var(--green); font-weight: 900; }
-    .fail { color: var(--red); font-weight: 900; }
-    .warn { color: var(--orange); font-weight: 900; }
-    .small { font-size: 12px; color: var(--muted); }
+    td.text-left, th.text-left { text-align: left; }
+    
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      background: white;
+      z-index: 1;
+      border-right: 2px solid #eee;
+      font-weight: bold;
+    }
+    
+    th.sticky-col { background: var(--navy); border-right: 2px solid var(--gold); }
 
-    details { border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: white; margin-top: 10px; }
-    summary { cursor: pointer; font-weight: 950; }
+    .best-row { background-color: rgba(212, 175, 55, 0.15); }
+    .best-row .sticky-col { background-color: #FDF9EC; } /* Match row bg */
+    
+    .status-badge {
+      font-size: 0.7em;
+      padding: 3px 6px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-top: 4px;
+    }
 
-    code { background: #f5efe2; padding: 2px 5px; border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    .status-auto { background: #e6f4ea; color: #1e8e3e; }
+    .status-manual { background: #fce8e6; color: #d93025; }
 
-    .footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 28px; }
-    .link-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; justify-content: center; }
-    .link-row a { color: var(--navy); font-weight: 900; text-decoration: none; border-bottom: 2px solid var(--gold); }
+    .manual-input {
+      width: 70px;
+      padding: 5px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      text-align: right;
+    }
+
+    .metrics-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      font-weight: bold;
+      color: var(--navy);
+    }
+
+    .warning-text { color: var(--alert-red); font-size: 0.8em; display: block; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <h1>Live Google Finance Stock Screener</h1>
-      <div class="subtitle">
-        Paste a ticker list, connect a Google Apps Script web app, and screen live GOOGLEFINANCE data for long-term compounders with positive calendar-year returns.
-      </div>
-      <div class="badges">
-        <span class="badge">GitHub Pages front end</span>
-        <span class="badge">Google Sheets GOOGLEFINANCE backend</span>
-        <span class="badge">No API key</span>
-        <span class="badge">Ticker-list based</span>
-      </div>
+
+  <h1>$10,000 to India</h1>
+  <div class="subtitle">Actual Rupees Delivered. No fluff. No hidden margins.</div>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> Rates change often. Final amount may differ inside the app. Always check the final quote before sending money. This tool does not send money, log into accounts, or store personal data. Promo rates may apply only to the first transfer.
+  </div>
+
+  <div class="controls-grid">
+    <div class="input-group">
+      <label for="sendAmount">Send Amount (USD)</label>
+      <input type="number" id="sendAmount" value="10000" min="1" step="100">
     </div>
-  </header>
-
-  <main class="wrap">
-    <section class="grid two">
-      <div class="card">
-        <h2>1. Connect your Apps Script URL</h2>
-        <p class="muted">Deploy the backend code shown below as a Google Apps Script web app, then paste the web app URL here.</p>
-        <label for="apiUrl">Google Apps Script Web App URL</label>
-        <input id="apiUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec" />
-
-        <h2 style="margin-top:18px;">2. Paste ticker list</h2>
-        <p class="muted">One ticker per line. Use exchange prefixes when possible, like <code>NASDAQ:NVDA</code> or <code>NYSE:LLY</code>.</p>
-        <textarea id="tickerInput" spellcheck="false" placeholder="NASDAQ:NVDA
-NASDAQ:MSFT
-NASDAQ:AAPL
-NYSE:LLY
-NASDAQ:AVGO"></textarea>
-
-        <div class="button-row">
-          <button onclick="runLiveScreener()">Run Live Screener</button>
-          <button class="secondary" onclick="loadSampleTickers()">Load Sample Tickers</button>
-          <button class="secondary" onclick="clearAll()">Clear</button>
-        </div>
-
-        <div class="note">
-          Google Finance does not scan the whole US market automatically. This tool screens only the tickers you paste.
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Screener settings</h2>
-        <div class="controls">
-          <div>
-            <label for="minCagr">Minimum CAGR</label>
-            <input id="minCagr" type="number" value="30" step="1" />
-          </div>
-          <div>
-            <label for="minMarketCap">Min market cap, USD</label>
-            <input id="minMarketCap" type="number" value="2000000000" step="100000000" />
-          </div>
-          <div>
-            <label for="minDollarVolume">Min dollar volume, USD</label>
-            <input id="minDollarVolume" type="number" value="10000000" step="1000000" />
-          </div>
-          <div>
-            <label for="topN">Top results</label>
-            <input id="topN" type="number" value="30" step="1" />
-          </div>
-        </div>
-
-        <div class="controls">
-          <div>
-            <label for="strictYears">Calendar-year rule</label>
-            <select id="strictYears">
-              <option value="yes" selected>All 10 positive</option>
-              <option value="no">Allow weak years</option>
-            </select>
-          </div>
-          <div>
-            <label for="allowMissingMeta">Missing market cap or volume</label>
-            <select id="allowMissingMeta">
-              <option value="fail" selected>Fail</option>
-              <option value="allow">Allow</option>
-            </select>
-          </div>
-          <div>
-            <label for="sortMode">Sort by</label>
-            <select id="sortMode">
-              <option value="passScore" selected>Pass, then score</option>
-              <option value="score">Score only</option>
-              <option value="tenYear">10Y CAGR</option>
-            </select>
-          </div>
-          <div>
-            <label for="batchSize">Batch size</label>
-            <input id="batchSize" type="number" value="20" step="5" />
-          </div>
-        </div>
-
-        <details>
-          <summary>Important limitation</summary>
-          <p class="small">GOOGLEFINANCE does not reliably identify common stock versus ETF, ADR, preferred share, warrant, SPAC, or closed-end fund. Best fix: paste a clean common-stock ticker list from Nasdaq, NYSE, or another source.</p>
-          <p class="small">This tool uses price return, not dividend-adjusted total return. Some historical returns may differ from professional databases.</p>
-        </details>
-      </div>
-    </section>
-
-    <section class="card" style="margin-top: 18px;">
-      <h2>Results</h2>
-      <div class="metric-row">
-        <div class="metric"><div class="label">Tickers checked</div><div class="num" id="mChecked">0</div></div>
-        <div class="metric"><div class="label">Passed</div><div class="num" id="mPassed">0</div></div>
-        <div class="metric"><div class="label">Failed</div><div class="num" id="mFailed">0</div></div>
-        <div class="metric"><div class="label">Top score</div><div class="num" id="mTopScore">0</div></div>
-      </div>
-
-      <div class="button-row">
-        <button class="gold" onclick="downloadCsv('top')">Download Top Results CSV</button>
-        <button class="secondary" onclick="downloadCsv('all')">Download All Results CSV</button>
-      </div>
-
-      <div id="status" class="note">Paste your Apps Script URL and ticker list, then run the screener.</div>
-      <div class="table-wrap" id="tableWrap"></div>
-    </section>
-
-    <section class="grid three" style="margin-top: 18px;">
-      <div class="card">
-        <h3>Pass rules</h3>
-        <p class="small">3Y, 5Y, 7Y, 8Y, 9Y, and 10Y CAGR must be at least the minimum CAGR.</p>
-        <p class="small">YTD and 1Y must be positive.</p>
-        <p class="small">Every completed calendar year in the last 10 years must be positive when strict mode is on.</p>
-      </div>
-      <div class="card">
-        <h3>Score</h3>
-        <p class="small">35% 10Y CAGR + 25% 5Y CAGR + 15% 3Y CAGR + 10% 1Y + 10% YTD + 5% consistency score.</p>
-      </div>
-      <div class="card">
-        <h3>Data warning</h3>
-        <p class="small">Google Finance data can be delayed, missing, or inconsistent. This is a research tool, not investment advice.</p>
-      </div>
-    </section>
-
-    <section class="card" style="margin-top:18px;">
-      <h2>Google Apps Script backend code</h2>
-      <p class="muted">Create a Google Sheet, go to Extensions → Apps Script, paste this code, deploy as Web App, and paste the deployment URL above.</p>
-      <textarea class="codebox" readonly id="backendCode"></textarea>
-      <div class="button-row">
-        <button class="secondary" onclick="copyBackendCode()">Copy Backend Code</button>
-      </div>
-      <div class="note">
-        Deploy settings: Execute as <strong>Me</strong>. Who has access: <strong>Anyone</strong>. Use the <code>/exec</code> URL, not the <code>/dev</code> URL.
-      </div>
-    </section>
-
-    <div class="footer">
-      Planning and research tool only. Not investment advice.
-      <div class="link-row">
-        <a href="https://www.reddit.com/r/rupeestories/" target="_blank" rel="noopener">r/rupeestories</a>
-        <a href="https://rupeestories.substack.com/" target="_blank" rel="noopener">Rupeestories Substack</a>
-      </div>
+    <div class="input-group">
+      <label for="fundingMethod">Funding Method</label>
+      <select id="fundingMethod">
+        <option value="bank">Bank Account / ACH (Slowest, Cheapest)</option>
+        <option value="wire">Bank Wire (Fast, Bank Fees Apply)</option>
+        <option value="debit">Debit Card (Fast, Higher Fees)</option>
+        <option value="credit">Credit Card (Cash Advance Fees May Apply)</option>
+      </select>
     </div>
-  </main>
+    <div class="input-group">
+      <label for="extraFee">Extra Funding Fee (USD, Optional)</label>
+      <input type="number" id="extraFee" value="0" min="0" step="1">
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn-primary" onclick="fetchRates()">Refresh Rates</button>
+    <button class="btn-secondary" onclick="addManualProvider()">+ Add Manual Provider</button>
+    <button class="btn-secondary" onclick="resetDefaults()">Reset</button>
+  </div>
+
+  <div class="metrics-bar">
+    <span id="refRateDisplay">Reference Rate: --</span>
+    <span id="moneyLeftDisplay">Money left on the table: --</span>
+  </div>
+
+  <div class="table-container">
+    <table id="comparisonTable">
+      <thead>
+        <tr>
+          <th class="sticky-col text-left">Provider</th>
+          <th>Rate (USD/INR)</th>
+          <th>Transfer Fee ($)</th>
+          <th>Total Fees ($)</th>
+          <th>USD Converted</th>
+          <th>Effective Rate</th>
+          <th>Spread (%)</th>
+          <th>INR Delivered</th>
+          <th>Diff vs Best</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- Rows rendered via JS -->
+      </tbody>
+    </table>
+  </div>
 
   <script>
-    let lastAllResults = [];
-    let lastTopResults = [];
-    let jsonpCounter = 0;
+    // Initial State - Falls back to manual mode if fetch fails
+    let state = {
+      amount: 10000,
+      extraFee: 0,
+      referenceRate: 83.25, // Fallback mid-market
+      providers: [
+        { name: "Wise", rate: 83.10, feeUsd: 45.32, status: "manual" },
+        { name: "ICICI Money2India", rate: 82.95, feeUsd: 0, status: "manual" },
+        { name: "Remitly", rate: 82.80, feeUsd: 0, status: "manual" },
+        { name: "Xoom", rate: null, feeUsd: null, status: "manual" },
+        { name: "XE", rate: null, feeUsd: null, status: "manual" }
+      ]
+    };
 
-    const BACKEND_CODE = `const SHEET_NAME = "GF_SCRATCH";
+    // Calculate all metrics and rank
+    function processProviders() {
+      state.amount = parseFloat(document.getElementById('sendAmount').value) || 0;
+      state.extraFee = parseFloat(document.getElementById('extraFee').value) || 0;
 
-function doGet(e) {
-  const callback = e.parameter.callback || "";
-  const rawTickers = e.parameter.tickers || "";
-  const tickers = rawTickers
-    .split(",")
-    .map(t => String(t).trim().toUpperCase())
-    .filter(Boolean)
-    .slice(0, 50);
+      let validProviders = [];
 
-  const payload = getGoogleFinanceData_(tickers);
-  const json = JSON.stringify(payload);
+      state.providers.forEach(p => {
+        // Read manual overrides from DOM if they exist
+        const rateInput = document.getElementById(`rate_${p.name}`);
+        const feeInput = document.getElementById(`fee_${p.name}`);
+        
+        if (rateInput) p.rate = parseFloat(rateInput.value) || 0;
+        if (feeInput) p.feeUsd = parseFloat(feeInput.value) || 0;
 
-  if (callback) {
-    return ContentService
-      .createTextOutput(callback + "(" + json + ")")
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
-  }
+        if (p.rate > 0) {
+          const totalFees = (p.feeUsd || 0) + state.extraFee;
+          const usdConverted = Math.max(0, state.amount - totalFees);
+          const inrDelivered = usdConverted * p.rate;
+          const effectiveRate = state.amount > 0 ? (inrDelivered / state.amount) : 0;
+          const spread = state.referenceRate > 0 
+            ? ((state.referenceRate - effectiveRate) / state.referenceRate) * 100 
+            : 0;
 
-  return ContentService
-    .createTextOutput(json)
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function getGoogleFinanceData_(tickers) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sh = ss.getSheetByName(SHEET_NAME);
-  if (!sh) sh = ss.insertSheet(SHEET_NAME);
-  sh.clear();
-
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const lastCompletedYear = currentYear - 1;
-  const firstYear = lastCompletedYear - 9;
-  const periods = [3, 5, 7, 8, 9, 10];
-  const header = [
-    "ticker", "name", "price", "marketCap", "volume",
-    "ytdStart", "oneYearStart",
-    "start3", "start5", "start7", "start8", "start9", "start10"
-  ];
-
-  for (let y = firstYear; y <= lastCompletedYear; y++) {
-    header.push("start_" + y);
-    header.push("end_" + y);
-  }
-
-  sh.getRange(1, 1, 1, header.length).setValues([header]);
-
-  tickers.forEach((ticker, idx) => {
-    const row = idx + 2;
-    const safeTicker = ticker.replace(/"/g, "");
-    sh.getRange(row, 1).setValue(safeTicker);
-    sh.getRange(row, 2).setFormula('=IFERROR(GOOGLEFINANCE(A' + row + ',"name"),"")');
-    sh.getRange(row, 3).setFormula('=IFERROR(GOOGLEFINANCE(A' + row + ',"price"),"")');
-    sh.getRange(row, 4).setFormula('=IFERROR(GOOGLEFINANCE(A' + row + ',"marketcap"),"")');
-    sh.getRange(row, 5).setFormula('=IFERROR(GOOGLEFINANCE(A' + row + ',"volume"),"")');
-    sh.getRange(row, 6).setFormula(histFormula_(row, currentYear, 1, 1, currentYear, 1, 14, "first"));
-    sh.getRange(row, 7).setFormula(lookbackFormula_(row, 12));
-
-    periods.forEach((p, pidx) => {
-      sh.getRange(row, 8 + pidx).setFormula(lookbackFormula_(row, p * 12));
-    });
-
-    let col = 14;
-    for (let y = firstYear; y <= lastCompletedYear; y++) {
-      sh.getRange(row, col).setFormula(histFormula_(row, y, 1, 1, y, 1, 14, "first"));
-      sh.getRange(row, col + 1).setFormula(histFormula_(row, y, 12, 20, y, 12, 31, "last"));
-      col += 2;
-    }
-  });
-
-  SpreadsheetApp.flush();
-  Utilities.sleep(8500);
-  SpreadsheetApp.flush();
-
-  const values = tickers.length
-    ? sh.getRange(2, 1, tickers.length, header.length).getValues()
-    : [];
-
-  const data = values.map(row => {
-    const obj = {};
-    header.forEach((h, i) => obj[h] = row[i]);
-    return obj;
-  });
-
-  return {
-    asOf: new Date().toISOString(),
-    source: "GOOGLEFINANCE via Google Sheets",
-    firstYear,
-    lastCompletedYear,
-    data
-  };
-}
-
-function lookbackFormula_(row, monthsBack) {
-  return '=IFERROR(INDEX(GOOGLEFINANCE(A' + row + ',"close",EDATE(TODAY(),-' + monthsBack + '),TODAY()),2,2),"")';
-}
-
-function histFormula_(row, sy, sm, sd, ey, em, ed, mode) {
-  const base = 'GOOGLEFINANCE(A' + row + ',"close",DATE(' + sy + ',' + sm + ',' + sd + '),DATE(' + ey + ',' + em + ',' + ed + '))';
-  if (mode === "last") {
-    return '=IFERROR(INDEX(' + base + ',ROWS(' + base + '),2),"")';
-  }
-  return '=IFERROR(INDEX(' + base + ',2,2),"")';
-}`;
-
-    document.getElementById("backendCode").value = BACKEND_CODE;
-
-    function loadSampleTickers() {
-      document.getElementById("tickerInput").value = [
-        "NASDAQ:NVDA",
-        "NASDAQ:MSFT",
-        "NASDAQ:AAPL",
-        "NASDAQ:AVGO",
-        "NASDAQ:COST",
-        "NYSE:LLY",
-        "NASDAQ:TSLA",
-        "NYSE:ORCL",
-        "NASDAQ:NFLX",
-        "NASDAQ:META"
-      ].join("
-");
-    }
-
-    function runLiveScreener() {
-      const apiUrl = document.getElementById("apiUrl").value.trim();
-      const tickers = document.getElementById("tickerInput").value
-        .split(/
-|,|;/)
-        .map(t => t.trim().toUpperCase())
-        .filter(Boolean);
-
-      if (!apiUrl) return setStatus("Paste your Apps Script web app URL first.", "danger");
-      if (!tickers.length) return setStatus("Paste at least one ticker.", "danger");
-
-      const batchSize = Math.max(1, Math.min(50, toNumber(document.getElementById("batchSize").value) || 20));
-      const batches = [];
-      for (let i = 0; i < tickers.length; i += batchSize) batches.push(tickers.slice(i, i + batchSize));
-
-      setStatus(`Fetching live GOOGLEFINANCE data for ${tickers.length} tickers in ${batches.length} batch(es). This can take a bit because Google Sheets formulas need time to calculate.`, "");
-      document.querySelector("button").disabled = true;
-
-      Promise.all(batches.map(batch => jsonpFetch(apiUrl, { tickers: batch.join(",") })))
-        .then(payloads => {
-          const merged = {
-            asOf: new Date().toISOString(),
-            firstYear: payloads[0]?.firstYear,
-            lastCompletedYear: payloads[0]?.lastCompletedYear,
-            data: payloads.flatMap(p => p.data || [])
-          };
-          processPayload(merged);
-        })
-        .catch(err => setStatus("Could not fetch data. Check the Apps Script URL, deployment access, and ticker format. Error: " + err.message, "danger"))
-        .finally(() => {
-          document.querySelector("button").disabled = false;
-        });
-    }
-
-    function jsonpFetch(baseUrl, params) {
-      return new Promise((resolve, reject) => {
-        const callbackName = "gfCallback_" + (++jsonpCounter) + "_" + Date.now();
-        const url = new URL(baseUrl);
-        Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
-        url.searchParams.set("callback", callbackName);
-
-        const script = document.createElement("script");
-        const timer = setTimeout(() => {
-          cleanup();
-          reject(new Error("Request timed out"));
-        }, 60000);
-
-        function cleanup() {
-          clearTimeout(timer);
-          delete window[callbackName];
-          if (script.parentNode) script.parentNode.removeChild(script);
+          validProviders.push({
+            ...p,
+            totalFees,
+            usdConverted,
+            inrDelivered,
+            effectiveRate,
+            spread
+          });
+        } else {
+          validProviders.push({ ...p, inrDelivered: -1 }); // Flag invalid for bottom sort
         }
-
-        window[callbackName] = data => {
-          cleanup();
-          resolve(data);
-        };
-
-        script.onerror = () => {
-          cleanup();
-          reject(new Error("Script load failed"));
-        };
-
-        script.src = url.toString();
-        document.body.appendChild(script);
-      });
-    }
-
-    function processPayload(payload) {
-      const minCagr = (toNumber(document.getElementById("minCagr").value) || 30) / 100;
-      const minMarketCap = toNumber(document.getElementById("minMarketCap").value) || 2000000000;
-      const minDollarVolume = toNumber(document.getElementById("minDollarVolume").value) || 10000000;
-      const topN = toNumber(document.getElementById("topN").value) || 30;
-      const strictYears = document.getElementById("strictYears").value === "yes";
-      const allowMissingMeta = document.getElementById("allowMissingMeta").value === "allow";
-      const sortMode = document.getElementById("sortMode").value;
-      const firstYear = payload.firstYear;
-      const lastCompletedYear = payload.lastCompletedYear;
-
-      const results = (payload.data || []).map(item => {
-        const price = toNumber(item.price);
-        const marketCap = toNumber(item.marketCap);
-        const volume = toNumber(item.volume);
-        const dollarVolume = price && volume ? price * volume : null;
-        const reasons = [];
-
-        if (!allowMissingMeta && !marketCap) reasons.push("Missing market cap");
-        if (!allowMissingMeta && !dollarVolume) reasons.push("Missing dollar volume");
-        if (marketCap && marketCap < minMarketCap) reasons.push("Market cap below limit");
-        if (dollarVolume && dollarVolume < minDollarVolume) reasons.push("Dollar volume below limit");
-
-        const ytdReturn = calcReturn(toNumber(item.ytdStart), price);
-        const oneYearReturn = calcReturn(toNumber(item.oneYearStart), price);
-        if (ytdReturn === null) reasons.push("Missing YTD data");
-        else if (ytdReturn <= 0) reasons.push("YTD not positive");
-        if (oneYearReturn === null) reasons.push("Missing 1Y data");
-        else if (oneYearReturn <= 0) reasons.push("1Y not positive");
-
-        const cagrs = {
-          3: calcCagr(toNumber(item.start3), price, 3),
-          5: calcCagr(toNumber(item.start5), price, 5),
-          7: calcCagr(toNumber(item.start7), price, 7),
-          8: calcCagr(toNumber(item.start8), price, 8),
-          9: calcCagr(toNumber(item.start9), price, 9),
-          10: calcCagr(toNumber(item.start10), price, 10)
-        };
-
-        [3,5,7,8,9,10].forEach(p => {
-          if (cagrs[p] === null) reasons.push(`Missing ${p}Y data`);
-          else if (cagrs[p] < minCagr) reasons.push(`${p}Y CAGR below limit`);
-        });
-
-        const yearlyReturns = {};
-        let positiveYears = 0;
-        let missingYears = 0;
-        for (let y = firstYear; y <= lastCompletedYear; y++) {
-          const r = calcReturn(toNumber(item["start_" + y]), toNumber(item["end_" + y]));
-          yearlyReturns[y] = r;
-          if (r === null) missingYears++;
-          else if (r > 0) positiveYears++;
-        }
-
-        if (strictYears && missingYears > 0) reasons.push("Missing calendar-year data");
-        if (strictYears && positiveYears < 10) reasons.push("Not positive in every completed year");
-
-        const consistencyScore = positiveYears / 10;
-        const score = safeNum(cagrs[10]) * 0.35 + safeNum(cagrs[5]) * 0.25 + safeNum(cagrs[3]) * 0.15 + safeNum(oneYearReturn) * 0.10 + safeNum(ytdReturn) * 0.10 + consistencyScore * 0.05;
-        const pass = reasons.length === 0;
-
-        return {
-          ticker: item.ticker,
-          name: item.name || item.ticker,
-          price,
-          marketCap,
-          volume,
-          dollarVolume,
-          ytdReturn,
-          oneYearReturn,
-          cagrs,
-          yearlyReturns,
-          positiveYears,
-          consistencyScore,
-          score,
-          pass,
-          reason: pass ? "Passed" : Array.from(new Set(reasons)).join("; ")
-        };
       });
 
-      results.sort((a, b) => {
-        if (sortMode === "score") return b.score - a.score;
-        if (sortMode === "tenYear") return safeNum(b.cagrs[10]) - safeNum(a.cagrs[10]);
-        if (a.pass !== b.pass) return a.pass ? -1 : 1;
-        return b.score - a.score;
-      });
+      // Sort by INR delivered descending
+      validProviders.sort((a, b) => b.inrDelivered - a.inrDelivered);
 
-      const passing = results.filter(r => r.pass);
-      const top = passing.slice(0, topN);
-      lastAllResults = results;
-      lastTopResults = top;
-
-      document.getElementById("mChecked").textContent = results.length;
-      document.getElementById("mPassed").textContent = passing.length;
-      document.getElementById("mFailed").textContent = Math.max(0, results.length - passing.length);
-      document.getElementById("mTopScore").textContent = top.length ? percent(top[0].score) : "0";
-
-      if (!passing.length) {
-        setStatus("No stocks passed. This rule set is very strict, or some GOOGLEFINANCE data is missing.", "danger");
-        renderTable(results.slice(0, 100), firstYear, lastCompletedYear);
+      const bestInr = validProviders[0]?.inrDelivered > 0 ? validProviders[0].inrDelivered : 0;
+      
+      // Calculate max spread difference for the UI header
+      const validOnly = validProviders.filter(p => p.inrDelivered > 0);
+      if (validOnly.length > 1) {
+        const worstInr = validOnly[validOnly.length - 1].inrDelivered;
+        const diff = bestInr - worstInr;
+        document.getElementById('moneyLeftDisplay').innerText = `Money left on the table (Best vs Worst): ₹${diff.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
       } else {
-        setStatus(`${passing.length} stocks passed. Showing top ${Math.min(topN, passing.length)}. Data time: ${payload.asOf || "now"}.`, "ok");
-        renderTable(top, firstYear, lastCompletedYear);
+        document.getElementById('moneyLeftDisplay').innerText = `Compare providers to find savings.`;
       }
+
+      document.getElementById('refRateDisplay').innerText = `Mid-Market Reference Rate: ${state.referenceRate}`;
+
+      renderTable(validProviders, bestInr);
     }
 
-    function renderTable(rows, firstYear, lastCompletedYear) {
-      const wrap = document.getElementById("tableWrap");
-      if (!rows.length) {
-        wrap.innerHTML = "";
-        return;
-      }
+    function renderTable(providers, bestInr) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
 
-      const years = [];
-      for (let y = firstYear; y <= lastCompletedYear; y++) years.push(y);
+      providers.forEach((p, index) => {
+        const tr = document.createElement('tr');
+        if (index === 0 && p.inrDelivered > 0) tr.className = 'best-row';
 
-      const headers = ["Rank", "Ticker", "Name", "Price", "Market Cap", "Volume", "Dollar Volume", "YTD", "1Y", "3Y CAGR", "5Y CAGR", "7Y CAGR", "8Y CAGR", "9Y CAGR", "10Y CAGR", ...years.map(String), "Positive Years", "Consistency", "Score", "Pass/Fail", "Reason"];
+        const isManual = p.status === 'manual' || p.rate === null;
+        const rateCell = isManual 
+          ? `<input type="number" id="rate_${p.name}" class="manual-input" value="${p.rate || ''}" step="0.01" onchange="processProviders()" placeholder="Rate">`
+          : (p.rate ? p.rate.toFixed(4) : '--');
 
-      let html = "<table><thead><tr>";
-      headers.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
-      html += "</tr></thead><tbody>";
+        const feeCell = isManual 
+          ? `<input type="number" id="fee_${p.name}" class="manual-input" value="${p.feeUsd !== null ? p.feeUsd : ''}" step="0.01" onchange="processProviders()" placeholder="Fee">`
+          : (p.feeUsd !== null ? `$${p.feeUsd.toFixed(2)}` : '--');
 
-      rows.forEach((r, idx) => {
-        html += "<tr>";
-        html += `<td>${idx + 1}</td>`;
-        html += `<td class="left"><strong>${escapeHtml(r.ticker)}</strong></td>`;
-        html += `<td class="left">${escapeHtml(r.name || "")}</td>`;
-        html += `<td>${money(r.price)}</td>`;
-        html += `<td>${money(r.marketCap)}</td>`;
-        html += `<td>${number(r.volume)}</td>`;
-        html += `<td>${money(r.dollarVolume)}</td>`;
-        html += `<td>${formatSignedPercent(r.ytdReturn)}</td>`;
-        html += `<td>${formatSignedPercent(r.oneYearReturn)}</td>`;
-        html += `<td>${formatSignedPercent(r.cagrs[3])}</td>`;
-        html += `<td>${formatSignedPercent(r.cagrs[5])}</td>`;
-        html += `<td>${formatSignedPercent(r.cagrs[7])}</td>`;
-        html += `<td>${formatSignedPercent(r.cagrs[8])}</td>`;
-        html += `<td>${formatSignedPercent(r.cagrs[9])}</td>`;
-        html += `<td>${formatSignedPercent(r.cagrs[10])}</td>`;
-        years.forEach(y => html += `<td>${formatSignedPercent(r.yearlyReturns[y])}</td>`);
-        html += `<td>${r.positiveYears}/10</td>`;
-        html += `<td>${percent(r.consistencyScore)}</td>`;
-        html += `<td><strong>${percent(r.score)}</strong></td>`;
-        html += `<td class="${r.pass ? "pass" : "fail"}">${r.pass ? "PASS" : "FAIL"}</td>`;
-        html += `<td class="left small">${escapeHtml(r.reason)}</td>`;
-        html += "</tr>";
+        let warning = '';
+        if (p.rate > state.referenceRate * 1.01) {
+          warning = `<span class="warning-text">Rate > 1% over mid-market. Likely a promo.</span>`;
+        }
+
+        const diffFromBest = bestInr > 0 && p.inrDelivered > 0 ? bestInr - p.inrDelivered : 0;
+
+        tr.innerHTML = `
+          <td class="sticky-col text-left">
+            ${p.name}
+            <br><span class="status-badge status-${isManual ? 'manual' : 'auto'}">${isManual ? 'Manual Entry' : 'Auto Fetched'}</span>
+          </td>
+          <td>${rateCell}${warning}</td>
+          <td>${feeCell}</td>
+          <td>${p.inrDelivered > 0 ? `$${p.totalFees.toFixed(2)}` : '--'}</td>
+          <td>${p.inrDelivered > 0 ? `$${p.usdConverted.toFixed(2)}` : '--'}</td>
+          <td>${p.inrDelivered > 0 ? p.effectiveRate.toFixed(4) : '--'}</td>
+          <td>${p.inrDelivered > 0 ? p.spread.toFixed(2) + '%' : '--'}</td>
+          <td style="font-weight: bold; color: ${index === 0 ? 'inherit' : 'var(--navy)'};">
+            ${p.inrDelivered > 0 ? '₹' + p.inrDelivered.toLocaleString('en-IN', {maximumFractionDigits:0}) : 'Enter Data'}
+          </td>
+          <td style="color: var(--alert-red);">
+            ${diffFromBest > 0 ? '-₹' + diffFromBest.toLocaleString('en-IN', {maximumFractionDigits:0}) : (p.inrDelivered > 0 ? 'Best' : '--')}
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
-
-      html += "</tbody></table>";
-      wrap.innerHTML = html;
     }
 
-    function calcReturn(startPrice, endPrice) {
-      if (!startPrice || !endPrice || startPrice <= 0) return null;
-      return (endPrice / startPrice) - 1;
+    async function fetchRates() {
+      // In a real scenario, this points to your backend URL.
+      // const backendUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?amount=' + state.amount;
+      
+      const btn = document.querySelector('.btn-primary');
+      btn.innerText = "Fetching...";
+      
+      try {
+        // Mocking the fetch for this demo to show how it handles the exact requested JSON
+        const mockResponse = getSampleJSON();
+        
+        state.referenceRate = mockResponse.referenceRate.rate;
+        
+        // Merge fetched providers with any existing manual ones
+        mockResponse.providers.forEach(fetchedProv => {
+          const existing = state.providers.find(p => p.name === fetchedProv.name);
+          if (existing) {
+            existing.rate = fetchedProv.rate;
+            existing.feeUsd = fetchedProv.feeUsd;
+            existing.status = fetchedProv.status;
+          } else {
+            state.providers.push(fetchedProv);
+          }
+        });
+
+      } catch (error) {
+        console.error("Fetch failed. Falling back to manual mode.", error);
+        alert("Could not fetch live rates. Please enter them manually.");
+      } finally {
+        btn.innerText = "Refresh Rates";
+        processProviders();
+      }
     }
 
-    function calcCagr(startPrice, endPrice, years) {
-      if (!startPrice || !endPrice || startPrice <= 0) return null;
-      return Math.pow(endPrice / startPrice, 1 / years) - 1;
+    function addManualProvider() {
+      const name = prompt("Enter provider name:");
+      if (name) {
+        state.providers.push({ name: name, rate: null, feeUsd: null, status: 'manual' });
+        processProviders();
+      }
     }
 
-    function toNumber(value) {
-      if (value === null || value === undefined || value === "") return null;
-      const num = Number(String(value).replace(/[$,%]/g, "").replace(/,/g, "").trim());
-      return Number.isFinite(num) ? num : null;
+    function resetDefaults() {
+      document.getElementById('sendAmount').value = 10000;
+      document.getElementById('extraFee').value = 0;
+      state.providers = [
+        { name: "Wise", rate: null, feeUsd: null, status: "manual" },
+        { name: "ICICI Money2India", rate: null, feeUsd: null, status: "manual" },
+        { name: "Remitly", rate: null, feeUsd: null, status: "manual" },
+        { name: "Xoom", rate: null, feeUsd: null, status: "manual" }
+      ];
+      processProviders();
     }
 
-    function safeNum(v) { return Number.isFinite(v) ? v : 0; }
-    function percent(v) { return Number.isFinite(v) ? (v * 100).toFixed(2) + "%" : ""; }
+    // Input listeners
+    document.getElementById('sendAmount').addEventListener('input', processProviders);
+    document.getElementById('extraFee').addEventListener('input', processProviders);
+    document.getElementById('fundingMethod').addEventListener('change', processProviders);
 
-    function money(v) {
-      if (!Number.isFinite(v)) return "";
-      if (Math.abs(v) >= 1e12) return "$" + (v / 1e12).toFixed(2) + "T";
-      if (Math.abs(v) >= 1e9) return "$" + (v / 1e9).toFixed(2) + "B";
-      if (Math.abs(v) >= 1e6) return "$" + (v / 1e6).toFixed(2) + "M";
-      return "$" + v.toLocaleString(undefined, { maximumFractionDigits: 2 });
-    }
+    // Initial render
+    processProviders();
 
-    function number(v) { return Number.isFinite(v) ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : ""; }
-
-    function formatSignedPercent(v) {
-      if (!Number.isFinite(v)) return "";
-      const cls = v > 0 ? "pass" : v < 0 ? "fail" : "warn";
-      return `<span class="${cls}">${percent(v)}</span>`;
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function setStatus(message, type) {
-      const el = document.getElementById("status");
-      el.className = "note" + (type ? " " + type : "");
-      el.textContent = message;
-    }
-
-    function clearAll() {
-      document.getElementById("tickerInput").value = "";
-      document.getElementById("tableWrap").innerHTML = "";
-      setStatus("Paste your Apps Script URL and ticker list, then run the screener.", "");
-      document.getElementById("mChecked").textContent = "0";
-      document.getElementById("mPassed").textContent = "0";
-      document.getElementById("mFailed").textContent = "0";
-      document.getElementById("mTopScore").textContent = "0";
-      lastAllResults = [];
-      lastTopResults = [];
-    }
-
-    function copyBackendCode() {
-      navigator.clipboard.writeText(BACKEND_CODE).then(() => setStatus("Backend code copied.", "ok"));
-    }
-
-    function downloadCsv(mode) {
-      const rows = mode === "top" ? lastTopResults : lastAllResults;
-      if (!rows.length) return alert("Run the screener first.");
-      const firstYear = Math.min(...rows.flatMap(r => Object.keys(r.yearlyReturns).map(Number)));
-      const lastYear = Math.max(...rows.flatMap(r => Object.keys(r.yearlyReturns).map(Number)));
-      const years = [];
-      for (let y = firstYear; y <= lastYear; y++) years.push(y);
-
-      const headers = ["rank", "ticker", "name", "price", "marketCap", "volume", "dollarVolume", "ytdReturn", "oneYearReturn", "cagr3Y", "cagr5Y", "cagr7Y", "cagr8Y", "cagr9Y", "cagr10Y", ...years.map(y => `${y}Return`), "positiveYears", "consistencyScore", "score", "pass", "reason"];
-      const out = [headers];
-
-      rows.forEach((r, idx) => out.push([
-        idx + 1, r.ticker, r.name, rawNum(r.price), rawNum(r.marketCap), rawNum(r.volume), rawNum(r.dollarVolume), rawNum(r.ytdReturn), rawNum(r.oneYearReturn), rawNum(r.cagrs[3]), rawNum(r.cagrs[5]), rawNum(r.cagrs[7]), rawNum(r.cagrs[8]), rawNum(r.cagrs[9]), rawNum(r.cagrs[10]), ...years.map(y => rawNum(r.yearlyReturns[y])), r.positiveYears, rawNum(r.consistencyScore), rawNum(r.score), r.pass ? "PASS" : "FAIL", r.reason
-      ]));
-
-      const csv = out.map(row => row.map(csvCell).join(",")).join("
-");
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = mode === "top" ? "top_live_google_finance_results.csv" : "all_live_google_finance_results.csv";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function rawNum(v) { return Number.isFinite(v) ? v : ""; }
-    function csvCell(value) {
-      const s = String(value ?? "");
-      return /[",
-]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    // Mock Backend Data Generator
+    function getSampleJSON() {
+      return {
+        "baseCurrency": "USD",
+        "targetCurrency": "INR",
+        "amount": parseFloat(document.getElementById('sendAmount').value) || 10000,
+        "referenceRate": {
+          "rate": 83.25,
+          "source": "Wise public API",
+          "timestamp": new Date().toISOString()
+        },
+        "providers": [
+          {
+            "name": "Wise",
+            "rate": 83.10,
+            "feeUsd": 45.32,
+            "source": "Wise quote API",
+            "timestamp": new Date().toISOString(),
+            "status": "auto"
+          },
+          {
+            "name": "ICICI Money2India",
+            "rate": 82.95,
+            "feeUsd": 0,
+            "source": "ICICI public page",
+            "timestamp": new Date().toISOString(),
+            "status": "auto"
+          },
+          {
+            "name": "Xoom",
+            "rate": null,
+            "feeUsd": null,
+            "source": "No clean public API available",
+            "timestamp": null,
+            "status": "manual"
+          }
+        ]
+      };
     }
   </script>
 </body>
